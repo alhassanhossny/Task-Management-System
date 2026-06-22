@@ -1,0 +1,117 @@
+{
+  "app": {
+    "name": "IT Task Management System",
+    "shortName": "TASK"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "tasks": "Tasks",
+    "users": "Users",
+    "departments": "Departments",
+    "roles": "Roles",
+    "settings": "Settings",
+    "audit": "Audit Log",
+    "backup": "Backup",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "createTask": "Create Task",
+    "myTasks": "My Tasks",
+    "allTasks": "All Tasks"
+  },
+  "task": {
+    "create": "Create Task",
+    "edit": "Edit Task",
+    "view": "View Task",
+    "titleAr": "Title (Arabic)",
+    "titleEn": "Title (English)",
+    "descriptionAr": "Description (Arabic)",
+    "descriptionEn": "Description (English)",
+    "number": "Task Number",
+    "status": "Status",
+    "sourceDepartment": "Source Department",
+    "targetDepartment": "Target Department",
+    "createdBy": "Created By",
+    "assignedTo": "Assigned To",
+    "dueDate": "Due Date",
+    "comments": "Comments",
+    "attachments": "Attachments",
+    "noTasks": "No tasks found",
+    "statuses": {
+      "draft": "Draft",
+      "new": "New",
+      "assigned": "Assigned",
+      "in_progress": "In Progress",
+      "waiting_for_response": "Waiting for Response",
+      "completed": "Completed",
+      "closed": "Closed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "comment": {
+    "add": "Add Comment",
+    "placeholder": "Write your comment here...",
+    "noComments": "No comments yet"
+  },
+  "attachment": {
+    "upload": "Upload File",
+    "dragDrop": "Drag and drop files here",
+    "paste": "Or paste from clipboard",
+    "noAttachments": "No attachments"
+  },
+  "user": {
+    "create": "Create User",
+    "edit": "Edit User",
+    "fullNameAr": "Full Name (Arabic)",
+    "fullNameEn": "Full Name (English)",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "department": "Department",
+    "noUsers": "No users found"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "username": "Username",
+    "password": "Password",
+    "invalidCredentials": "Invalid credentials",
+    "sessionExpired": "Session expired"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "loading": "Loading...",
+    "noData": "No data",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "close": "Close",
+    "back": "Back",
+    "actions": "Actions",
+    "arabic": "العربية",
+    "english": "English"
+  },
+  "dashboard": {
+    "welcome": "Welcome to TASK System",
+    "totalTasks": "Total Tasks",
+    "openTasks": "Open Tasks",
+    "assignedTasks": "Assigned Tasks",
+    "waitingTasks": "Waiting Tasks",
+    "completedTasks": "Completed Tasks",
+    "myTasks": "My Tasks"
+  },
+  "notification": {
+    "title": "Notifications",
+    "markAllRead": "Mark All as Read",
+    "noNotifications": "No notifications",
+    "unread": "Unread"
+  }
+}

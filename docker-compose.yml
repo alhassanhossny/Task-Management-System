@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: task-postgres
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_DB: task_hospital
+      POSTGRES_USER: task_admin
+      POSTGRES_PASSWORD: Task@Secure#2024
+    ports:
+      - "5432:5432"
+    networks:
+      - task-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U task_admin -d task_hospital"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: task-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - uploads_data:/app/uploads
+      - backups_data:/app/backups
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: task_admin
+      DB_PASSWORD: Task@Secure#2024
+      DB_DATABASE: task_hospital
+      JWT_SECRET: SuperSecretKeyForHospitalTaskSystem2024!@#$%
+      JWT_REFRESH_SECRET: RefreshSecretKeyForHospitalTaskSystem2024!@#$%
+      SERVER_PORT: 3000
+      UPLOAD_DIR: /app/uploads
+      BACKUP_DIR: /app/backups
+      CORS_ORIGIN: http://172.16.1.10
+      DEFAULT_LANG: ar
+    ports:
+      - "3000:3000"
+    networks:
+      - task-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: task-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - task-network
+
+networks:
+  task-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  uploads_data:
+  backups_data:

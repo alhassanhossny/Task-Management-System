@@ -1,0 +1,117 @@
+{
+  "app": {
+    "name": "نظام إدارة مهام تقنية المعلومات",
+    "shortName": "TASK"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "tasks": "المهام",
+    "users": "المستخدمين",
+    "departments": "الأقسام",
+    "roles": "الصلاحيات",
+    "settings": "الإعدادات",
+    "audit": "سجل التدقيق",
+    "backup": "النسخ الاحتياطي",
+    "notifications": "الإشعارات",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل خروج",
+    "login": "تسجيل دخول",
+    "createTask": "إنشاء مهمة",
+    "myTasks": "مهامي",
+    "allTasks": "جميع المهام"
+  },
+  "task": {
+    "create": "إنشاء مهمة",
+    "edit": "تعديل مهمة",
+    "view": "عرض مهمة",
+    "titleAr": "العنوان (عربي)",
+    "titleEn": "العنوان (إنجليزي)",
+    "descriptionAr": "الوصف (عربي)",
+    "descriptionEn": "الوصف (إنجليزي)",
+    "number": "رقم المهمة",
+    "status": "الحالة",
+    "sourceDepartment": "القسم المصدر",
+    "targetDepartment": "القسم المستهدف",
+    "createdBy": "تم الإنشاء بواسطة",
+    "assignedTo": "مسندة إلى",
+    "dueDate": "تاريخ الاستحقاق",
+    "comments": "التعليقات",
+    "attachments": "المرفقات",
+    "noTasks": "لا توجد مهام",
+    "statuses": {
+      "draft": "مسودة",
+      "new": "جديد",
+      "assigned": "مسند",
+      "in_progress": "قيد التنفيذ",
+      "waiting_for_response": "بانتظار الرد",
+      "completed": "مكتمل",
+      "closed": "مغلق",
+      "cancelled": "ملغي"
+    }
+  },
+  "comment": {
+    "add": "إضافة تعليق",
+    "placeholder": "اكتب تعليقك هنا...",
+    "noComments": "لا توجد تعليقات"
+  },
+  "attachment": {
+    "upload": "رفع ملف",
+    "dragDrop": "اسحب وأفلت الملفات هنا",
+    "paste": "أو الصق من الحافظة",
+    "noAttachments": "لا توجد مرفقات"
+  },
+  "user": {
+    "create": "إنشاء مستخدم",
+    "edit": "تعديل مستخدم",
+    "fullNameAr": "الاسم الكامل (عربي)",
+    "fullNameEn": "الاسم الكامل (إنجليزي)",
+    "username": "اسم المستخدم",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "role": "الدور",
+    "department": "القسم",
+    "noUsers": "لا توجد مستخدمين"
+  },
+  "auth": {
+    "login": "تسجيل دخول",
+    "logout": "تسجيل خروج",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "invalidCredentials": "بيانات الدخول غير صحيحة",
+    "sessionExpired": "انتهت الجلسة"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "search": "بحث",
+    "filter": "تصفية",
+    "loading": "جارٍ التحميل...",
+    "noData": "لا توجد بيانات",
+    "confirm": "تأكيد",
+    "success": "تم بنجاح",
+    "error": "خطأ",
+    "close": "إغلاق",
+    "back": "رجوع",
+    "actions": "إجراءات",
+    "arabic": "العربية",
+    "english": "English"
+  },
+  "dashboard": {
+    "welcome": "مرحباً بك في نظام TASK",
+    "totalTasks": "إجمالي المهام",
+    "openTasks": "المهام المفتوحة",
+    "assignedTasks": "المهام المسندة",
+    "waitingTasks": "المهام المنتظرة",
+    "completedTasks": "المهام المكتملة",
+    "myTasks": "مهامي"
+  },
+  "notification": {
+    "title": "الإشعارات",
+    "markAllRead": "تحديد الكل كمقروء",
+    "noNotifications": "لا توجد إشعارات",
+    "unread": "غير مقروء"
+  }
+}
