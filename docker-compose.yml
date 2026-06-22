@@ -13,7 +13,7 @@ services:
       POSTGRES_USER: task_admin
       POSTGRES_PASSWORD: Task@Secure#2024
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - task-network
     healthcheck:
@@ -46,10 +46,10 @@ services:
       SERVER_PORT: 3000
       UPLOAD_DIR: /app/uploads
       BACKUP_DIR: /app/backups
-      CORS_ORIGIN: http://172.16.1.10
+      CORS_ORIGIN: http://172.16.1.10:8080
       DEFAULT_LANG: ar
     ports:
-      - "3000:3000"
+      - "3001:3000"
     networks:
       - task-network
 
@@ -62,7 +62,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "80:80"
+      - "8080:80"
     networks:
       - task-network
 
