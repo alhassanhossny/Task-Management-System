@@ -19,14 +19,6 @@ export class CreateTaskDto {
   @IsOptional()
   @IsNumber()
   targetDepartmentId?: number;
-
-  @IsOptional()
-  @IsString()
-  assignedTo?: string;
-
-  @IsOptional()
-  @IsNumber()
-  assignedToDepartmentId?: number;
 }
 
 export class UpdateTaskDto {
@@ -49,14 +41,6 @@ export class UpdateTaskDto {
   @IsOptional()
   @IsNumber()
   targetDepartmentId?: number;
-
-  @IsOptional()
-  @IsString()
-  assignedTo?: string;
-
-  @IsOptional()
-  @IsNumber()
-  assignedToDepartmentId?: number;
 
   @IsOptional()
   @IsString()
@@ -122,16 +106,11 @@ export class TaskResponseDto {
   createdBy: string;
   createdByNameAr: string;
   createdByNameEn: string;
-  assignedTo: string;
-  assignedToNameAr: string;
-  assignedToNameEn: string;
-  assignedToDepartmentId: number;
-  assignedToDepartmentNameAr: string;
-  assignedToDepartmentNameEn: string;
   taskTitleId: number;
   taskTitleAr: string;
   taskTitleEn: string;
   status: string;
+  submittedAt: string;
   createdAt: string;
   updatedAt: string;
   commentCount: number;

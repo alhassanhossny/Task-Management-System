@@ -41,7 +41,7 @@ export default function TaskTitlesPage() {
   const fetchTitles = async () => {
     try {
       const res = await api.get('/task-titles');
-      setTitles(res.data || []);
+      setTitles(res.data?.data || res.data || []);
     } catch { }
     finally { setLoading(false); }
   };

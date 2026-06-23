@@ -31,7 +31,6 @@ export default function TaskFormPage() {
   const [saving, setSaving] = useState(false);
   const [taskTitles, setTaskTitles] = useState<any[]>([]);
   const [departments, setDepartments] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
   const [files, setFiles] = useState<FileList | null>(null);
   const [form, setForm] = useState({
     taskTitleId: '',
@@ -39,26 +38,17 @@ export default function TaskFormPage() {
     descriptionEn: '',
     sourceDepartmentId: '',
     targetDepartmentId: '',
-    assignedTo: '',
-    assignedToDepartmentId: '',
   });
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [titleRes, deptRes, userRes] = await Promise.all([
+        const [titleRes, deptRes] = await Promise.all([
           api.get('/task-titles/active'),
           api.get('/departments/active'),
-          api.get('/users'),
         ]);
-        setTaskTitles(titleRes.data || []);
-        setDepartments(deptRes.data.data || []);
-
-        const allUsers = userRes.data.data || [];
-        const filtered = user?.departmentId
-          ? allUsers.filter((u: any) => u.departmentId !== user.departmentId)
-          : allUsers;
-        setUsers(filtered);
+        setTaskTitles(titleRes.data?.data || titleRes.data || []);
+        setDepartments(deptRes.data?.data || []);
       } catch { }
     };
     loadData();
@@ -82,8 +72,6 @@ export default function TaskFormPage() {
             descriptionEn: task.descriptionEn || '',
             sourceDepartmentId: task.sourceDepartmentId ? String(task.sourceDepartmentId) : '',
             targetDepartmentId: task.targetDepartmentId ? String(task.targetDepartmentId) : '',
-            assignedTo: task.assignedTo || '',
-            assignedToDepartmentId: task.assignedToDepartmentId ? String(task.assignedToDepartmentId) : '',
           });
         } catch {
           toast.error('Failed to load task');
@@ -109,8 +97,6 @@ export default function TaskFormPage() {
       descriptionEn: form.descriptionEn || undefined,
       sourceDepartmentId: form.sourceDepartmentId ? Number(form.sourceDepartmentId) : undefined,
       targetDepartmentId: form.targetDepartmentId ? Number(form.targetDepartmentId) : undefined,
-      assignedTo: form.assignedTo || undefined,
-      assignedToDepartmentId: form.assignedToDepartmentId ? Number(form.assignedToDepartmentId) : undefined,
     };
 
     try {
@@ -217,42 +203,6 @@ export default function TaskFormPage() {
                   label={t('task.targetDepartment')}
                   name="targetDepartmentId"
                   value={form.targetDepartmentId}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="">--</MenuItem>
-                  {departments
-                    .filter((d) => d.id !== user?.departmentId)
-                    .map((dept: any) => (
-                      <MenuItem key={dept.id} value={dept.id}>
-                        {lang === 'ar' ? dept.nameAr : dept.nameEn}
-                      </MenuItem>
-                    ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('task.assignedTo')}
-                  name="assignedTo"
-                  value={form.assignedTo}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="">--</MenuItem>
-                  {users.map((u: any) => (
-                    <MenuItem key={u.id} value={u.id}>
-                      {lang === 'ar' ? u.fullNameAr : u.fullNameEn}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('task.assignedToDepartment')}
-                  name="assignedToDepartmentId"
-                  value={form.assignedToDepartmentId}
                   onChange={handleChange}
                 >
                   <MenuItem value="">--</MenuItem>

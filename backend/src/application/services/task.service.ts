@@ -40,7 +40,8 @@ export class TaskService {
       titleAr: taskTitle.titleAr,
       titleEn: taskTitle.titleEn,
       createdBy: userId,
-      status: 'draft',
+      status: 'new',
+      submittedAt: new Date(),
     };
     const task = this.taskRepository.create(taskData as any);
 
@@ -51,7 +52,6 @@ export class TaskService {
     const queryBuilder = this.taskRepository.createQueryBuilder('task')
       .leftJoinAndSelect('task.sourceDepartment', 'sourceDepartment')
       .leftJoinAndSelect('task.targetDepartment', 'targetDepartment')
-      .leftJoinAndSelect('task.assignedToDepartment', 'assignedToDepartment')
       .leftJoinAndSelect('task.createdByUser', 'createdByUser')
       .leftJoinAndSelect('task.taskTitle', 'taskTitle')
       .where('task.isActive = :isActive', { isActive: true });
@@ -68,7 +68,7 @@ export class TaskService {
 
     if (filters.departmentId) {
       queryBuilder.andWhere(
-        '(task.sourceDepartmentId = :deptId OR task.targetDepartmentId = :deptId OR task.assignedToDepartmentId = :deptId)',
+        '(task.sourceDepartmentId = :deptId OR task.targetDepartmentId = :deptId)',
         { deptId: filters.departmentId },
       );
     }
@@ -108,7 +108,6 @@ export class TaskService {
     const queryBuilder = this.taskRepository.createQueryBuilder('task')
       .leftJoinAndSelect('task.sourceDepartment', 'sourceDepartment')
       .leftJoinAndSelect('task.targetDepartment', 'targetDepartment')
-      .leftJoinAndSelect('task.assignedToDepartment', 'assignedToDepartment')
       .leftJoinAndSelect('task.createdByUser', 'createdByUser')
       .leftJoinAndSelect('task.taskTitle', 'taskTitle')
       .where('task.createdBy = :userId', { userId })
@@ -133,7 +132,6 @@ export class TaskService {
       relations: [
         'sourceDepartment',
         'targetDepartment',
-        'assignedToDepartment',
         'createdByUser',
         'taskTitle',
         'comments',
@@ -158,7 +156,6 @@ export class TaskService {
       relations: [
         'sourceDepartment',
         'targetDepartment',
-        'assignedToDepartment',
         'createdByUser',
         'taskTitle',
       ],
@@ -203,6 +200,10 @@ export class TaskService {
       );
     }
 
+    if (currentStatus === 'draft' && newStatus === 'new') {
+      task.submittedAt = new Date();
+    }
+
     task.status = newStatus;
     return this.taskRepository.save(task);
   }
@@ -238,9 +239,6 @@ export class TaskService {
     const openTasks = await this.taskRepository.count({
       where: { createdBy: userId, isActive: true, status: 'in_progress' },
     });
-    const assignedTasks = await this.taskRepository.count({
-      where: { assignedTo: userId, isActive: true, status: 'assigned' },
-    });
     const waitingTasks = await this.taskRepository.count({
       where: { createdBy: userId, isActive: true, status: 'waiting_for_response' },
     });
@@ -248,7 +246,7 @@ export class TaskService {
       where: { createdBy: userId, isActive: true, status: 'completed' },
     });
 
-    return { openTasks, assignedTasks, waitingTasks, completedTasks };
+    return { openTasks, waitingTasks, completedTasks };
   }
 
   private async generateTaskNumber(): Promise<string> {

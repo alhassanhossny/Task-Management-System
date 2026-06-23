@@ -4,7 +4,6 @@ import { CreateTaskDto, UpdateTaskDto, TaskFilterDto, ChangeStatusDto } from '..
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { AuditService } from '../../infrastructure/audit/audit.service';
-import { NotificationService } from '../../application/services/notification.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('tasks')
@@ -12,7 +11,6 @@ export class TasksController {
   constructor(
     private taskService: TaskService,
     private auditService: AuditService,
-    private notificationService: NotificationService,
   ) {}
 
   @Post()
@@ -30,10 +28,6 @@ export class TasksController {
       userId: req.user.id,
       ipAddress: req.ip,
     });
-
-    if (task.assignedTo) {
-      await this.notificationService.notifyTaskAssigned(task, task.assignedTo);
-    }
 
     return task;
   }
@@ -100,10 +94,6 @@ export class TasksController {
       userId: req.user.id,
       ipAddress: req.ip,
     });
-
-    if (task.assignedTo) {
-      await this.notificationService.notifyStatusChanged(task, task.assignedTo, task.status);
-    }
 
     return task;
   }

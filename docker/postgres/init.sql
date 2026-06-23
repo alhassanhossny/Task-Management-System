@@ -61,10 +61,9 @@ CREATE TABLE IF NOT EXISTS tasks (
     source_department_id INTEGER REFERENCES departments(id),
     target_department_id INTEGER REFERENCES departments(id),
     created_by UUID REFERENCES users(id),
-    assigned_to UUID REFERENCES users(id),
-    assigned_to_department_id INTEGER REFERENCES departments(id),
     task_title_id INTEGER REFERENCES task_titles(id),
     status VARCHAR(50) DEFAULT 'draft',
+    submitted_at TIMESTAMP,
     due_date TIMESTAMP,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -145,10 +144,8 @@ CREATE INDEX idx_users_is_active ON users(is_active);
 CREATE INDEX idx_tasks_task_number ON tasks(task_number);
 CREATE INDEX idx_tasks_status ON tasks(status);
 CREATE INDEX idx_tasks_created_by ON tasks(created_by);
-CREATE INDEX idx_tasks_assigned_to ON tasks(assigned_to);
 CREATE INDEX idx_tasks_source_department ON tasks(source_department_id);
 CREATE INDEX idx_tasks_target_department ON tasks(target_department_id);
-CREATE INDEX idx_tasks_assigned_department ON tasks(assigned_to_department_id);
 CREATE INDEX idx_tasks_created_at ON tasks(created_at);
 CREATE INDEX idx_tasks_is_active ON tasks(is_active);
 

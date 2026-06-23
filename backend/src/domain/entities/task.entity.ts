@@ -37,17 +37,14 @@ export class Task {
   @Column({ name: 'created_by', type: 'varchar' })
   createdBy: string;
 
-  @Column({ name: 'assigned_to', nullable: true, type: 'varchar' })
-  assignedTo: string | null;
-
-  @Column({ name: 'assigned_to_department_id', nullable: true, type: 'int' })
-  assignedToDepartmentId: number | null;
-
   @Column({ name: 'task_title_id', type: 'int', nullable: true })
   taskTitleId: number | null;
 
   @Column({ length: 50, default: 'draft' })
   status: string;
+
+  @Column({ name: 'submitted_at', nullable: true, type: 'timestamp' })
+  submittedAt: Date | null;
 
   @Column({ name: 'due_date', nullable: true, type: 'timestamp' })
   dueDate: Date | null;
@@ -76,10 +73,6 @@ export class Task {
   @ManyToOne(() => Department)
   @JoinColumn({ name: 'target_department_id' })
   targetDepartment: Department;
-
-  @ManyToOne(() => Department)
-  @JoinColumn({ name: 'assigned_to_department_id' })
-  assignedToDepartment: Department;
 
   @OneToMany(() => TaskComment, comment => comment.task)
   comments: TaskComment[];
