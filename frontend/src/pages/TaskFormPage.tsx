@@ -10,8 +10,10 @@ import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { useTranslation } from 'react-i18next';
 import { useDirection } from '../hooks/useDirection';
+import { useAuth } from '../store/auth.context';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -19,39 +21,54 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 export default function TaskFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { arrowFlip } = useDirection();
+  const { user } = useAuth();
   const isEdit = !!id;
+  const lang = i18n.language;
 
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
+  const [taskTitles, setTaskTitles] = useState<any[]>([]);
   const [departments, setDepartments] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
+  const [files, setFiles] = useState<FileList | null>(null);
   const [form, setForm] = useState({
-    titleAr: '',
-    titleEn: '',
+    taskTitleId: '',
     descriptionAr: '',
     descriptionEn: '',
     sourceDepartmentId: '',
     targetDepartmentId: '',
     assignedTo: '',
     assignedToDepartmentId: '',
-    dueDate: '',
   });
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [deptRes, userRes] = await Promise.all([
+        const [titleRes, deptRes, userRes] = await Promise.all([
+          api.get('/task-titles/active'),
           api.get('/departments/active'),
           api.get('/users'),
         ]);
+        setTaskTitles(titleRes.data || []);
         setDepartments(deptRes.data.data || []);
-        setUsers(userRes.data.data || []);
+
+        const allUsers = userRes.data.data || [];
+        const filtered = user?.departmentId
+          ? allUsers.filter((u: any) => u.departmentId !== user.departmentId)
+          : allUsers;
+        setUsers(filtered);
       } catch { }
     };
     loadData();
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    if (user?.departmentId) {
+      setForm((f) => ({ ...f, sourceDepartmentId: String(user.departmentId!) }));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (isEdit) {
@@ -60,15 +77,13 @@ export default function TaskFormPage() {
           const res = await api.get(`/tasks/${id}`);
           const task = res.data.data;
           setForm({
-            titleAr: task.titleAr || '',
-            titleEn: task.titleEn || '',
+            taskTitleId: task.taskTitleId ? String(task.taskTitleId) : '',
             descriptionAr: task.descriptionAr || '',
             descriptionEn: task.descriptionEn || '',
-            sourceDepartmentId: task.sourceDepartmentId || '',
-            targetDepartmentId: task.targetDepartmentId || '',
+            sourceDepartmentId: task.sourceDepartmentId ? String(task.sourceDepartmentId) : '',
+            targetDepartmentId: task.targetDepartmentId ? String(task.targetDepartmentId) : '',
             assignedTo: task.assignedTo || '',
-            assignedToDepartmentId: task.assignedToDepartmentId || '',
-            dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
+            assignedToDepartmentId: task.assignedToDepartmentId ? String(task.assignedToDepartmentId) : '',
           });
         } catch {
           toast.error('Failed to load task');
@@ -89,22 +104,37 @@ export default function TaskFormPage() {
     setSaving(true);
 
     const payload = {
-      ...form,
-      sourceDepartmentId: form.sourceDepartmentId ? Number(form.sourceDepartmentId) : null,
-      targetDepartmentId: form.targetDepartmentId ? Number(form.targetDepartmentId) : null,
-      assignedToDepartmentId: form.assignedToDepartmentId ? Number(form.assignedToDepartmentId) : null,
+      taskTitleId: Number(form.taskTitleId),
+      descriptionAr: form.descriptionAr || undefined,
+      descriptionEn: form.descriptionEn || undefined,
+      sourceDepartmentId: form.sourceDepartmentId ? Number(form.sourceDepartmentId) : undefined,
+      targetDepartmentId: form.targetDepartmentId ? Number(form.targetDepartmentId) : undefined,
+      assignedTo: form.assignedTo || undefined,
+      assignedToDepartmentId: form.assignedToDepartmentId ? Number(form.assignedToDepartmentId) : undefined,
     };
 
     try {
+      let taskId: string;
       if (isEdit) {
         await api.put(`/tasks/${id}`, payload);
+        taskId = id!;
         toast.success(t('common.success'));
-        navigate(`/tasks/${id}`);
       } else {
         const res = await api.post('/tasks', payload);
+        taskId = res.data.data?.id || res.data.id;
         toast.success(t('common.success'));
-        navigate(`/tasks/${res.data.data.id}`);
+
+        if (files?.length) {
+          const formData = new FormData();
+          Array.from(files).forEach(f => formData.append('files', f));
+          try {
+            await api.post(`/tasks/${taskId}/attachments`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            });
+          } catch { }
+        }
       }
+      navigate(`/tasks/${taskId}`);
     } catch (err: any) {
       toast.error(err.response?.data?.message?.[0] || 'Error saving task');
     } finally {
@@ -131,60 +161,54 @@ export default function TaskFormPage() {
                 <TextField
                   fullWidth
                   required
-                  label={t('task.titleAr')}
-                  name="titleAr"
-                  value={form.titleAr}
+                  select
+                  label={lang === 'ar' ? t('task.titleAr') : t('task.titleEn')}
+                  name="taskTitleId"
+                  value={form.taskTitleId}
                   onChange={handleChange}
-                />
+                >
+                  <MenuItem value="">--</MenuItem>
+                  {taskTitles.map((tt: any) => (
+                    <MenuItem key={tt.id} value={tt.id}>
+                      {lang === 'ar' ? tt.titleAr : tt.titleEn}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  required
-                  label={t('task.titleEn')}
-                  name="titleEn"
-                  value={form.titleEn}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   multiline
                   rows={3}
-                  label={t('task.descriptionAr')}
+                  label={lang === 'ar' ? t('task.descriptionAr') : t('task.descriptionEn')}
                   name="descriptionAr"
                   value={form.descriptionAr}
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={3}
-                  label={t('task.descriptionEn')}
-                  name="descriptionEn"
-                  value={form.descriptionEn}
-                  onChange={handleChange}
-                />
+              <Grid item xs={12}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Button variant="outlined" component="label" startIcon={<AttachFileIcon />}>
+                    {t('attachment.upload')}
+                    <input type="file" hidden multiple onChange={(e) => setFiles(e.target.files)} />
+                  </Button>
+                  {files?.length ? (
+                    <Typography variant="body2" color="text.secondary">
+                      {files.length} {t('attachment.files') || 'files'} selected
+                    </Typography>
+                  ) : null}
+                </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  select
                   label={t('task.sourceDepartment')}
-                  name="sourceDepartmentId"
-                  value={form.sourceDepartmentId}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="">--</MenuItem>
-                  {departments.map((dept: any) => (
-                    <MenuItem key={dept.id} value={dept.id}>
-                      {dept.nameAr} - {dept.nameEn}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  value={user?.departmentId
+                    ? (lang === 'ar' ? user.departmentNameAr : user.departmentNameEn)
+                    : '--'}
+                  InputProps={{ readOnly: true }}
+                  disabled
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -196,11 +220,13 @@ export default function TaskFormPage() {
                   onChange={handleChange}
                 >
                   <MenuItem value="">--</MenuItem>
-                  {departments.map((dept: any) => (
-                    <MenuItem key={dept.id} value={dept.id}>
-                      {dept.nameAr} - {dept.nameEn}
-                    </MenuItem>
-                  ))}
+                  {departments
+                    .filter((d) => d.id !== user?.departmentId)
+                    .map((dept: any) => (
+                      <MenuItem key={dept.id} value={dept.id}>
+                        {lang === 'ar' ? dept.nameAr : dept.nameEn}
+                      </MenuItem>
+                    ))}
                 </TextField>
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -215,7 +241,7 @@ export default function TaskFormPage() {
                   <MenuItem value="">--</MenuItem>
                   {users.map((u: any) => (
                     <MenuItem key={u.id} value={u.id}>
-                      {u.fullNameAr} - {u.fullNameEn}
+                      {lang === 'ar' ? u.fullNameAr : u.fullNameEn}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -230,23 +256,14 @@ export default function TaskFormPage() {
                   onChange={handleChange}
                 >
                   <MenuItem value="">--</MenuItem>
-                  {departments.map((dept: any) => (
-                    <MenuItem key={dept.id} value={dept.id}>
-                      {dept.nameAr} - {dept.nameEn}
-                    </MenuItem>
-                  ))}
+                  {departments
+                    .filter((d) => d.id !== user?.departmentId)
+                    .map((dept: any) => (
+                      <MenuItem key={dept.id} value={dept.id}>
+                        {lang === 'ar' ? dept.nameAr : dept.nameEn}
+                      </MenuItem>
+                    ))}
                 </TextField>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  label={t('task.dueDate')}
-                  name="dueDate"
-                  value={form.dueDate}
-                  onChange={handleChange}
-                  InputLabelProps={{ shrink: true }}
-                />
               </Grid>
               <Grid item xs={12}>
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>

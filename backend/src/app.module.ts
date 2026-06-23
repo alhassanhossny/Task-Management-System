@@ -14,6 +14,7 @@ import { NotificationsModule } from './presentation/modules/notifications.module
 import { AuditModule } from './presentation/modules/audit.module';
 import { SettingsModule } from './presentation/modules/settings.module';
 import { BackupModule } from './presentation/modules/backup.module';
+import { TaskTitlesModule } from './presentation/modules/task-titles.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 
 @Module({
@@ -51,6 +52,7 @@ import { DatabaseModule } from './infrastructure/database/database.module';
     AuditModule,
     SettingsModule,
     BackupModule,
+    TaskTitlesModule,
   ],
   providers: [
     {

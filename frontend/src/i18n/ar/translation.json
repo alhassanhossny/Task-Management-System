@@ -18,12 +18,14 @@
     "login": "تسجيل دخول",
     "createTask": "إنشاء مهمة",
     "myTasks": "مهامي",
-    "allTasks": "جميع المهام"
+    "allTasks": "جميع المهام",
+    "taskTitles": "عناوين المهام"
   },
   "task": {
     "create": "إنشاء مهمة",
     "edit": "تعديل مهمة",
     "view": "عرض مهمة",
+    "title": "العنوان",
     "titleAr": "العنوان (عربي)",
     "titleEn": "العنوان (إنجليزي)",
     "descriptionAr": "الوصف (عربي)",
@@ -113,5 +115,31 @@
     "markAllRead": "تحديد الكل كمقروء",
     "noNotifications": "لا توجد إشعارات",
     "unread": "غير مقروء"
+  },
+  "taskTitle": {
+    "management": "إدارة عناوين المهام",
+    "titleAr": "العنوان (عربي)",
+    "titleEn": "العنوان (إنجليزي)",
+    "sortOrder": "ترتيب",
+    "isActive": "نشط",
+    "create": "إضافة عنوان",
+    "edit": "تعديل عنوان",
+    "delete": "حذف عنوان",
+    "confirmDelete": "هل أنت متأكد من حذف هذا العنوان؟",
+    "noTitles": "لا توجد عناوين مهام"
+  },
+  "department": {
+    "management": "إدارة الأقسام",
+    "create": "إضافة قسم",
+    "edit": "تعديل قسم",
+    "delete": "حذف قسم",
+    "confirmDelete": "هل أنت متأكد من حذف هذا القسم؟"
+  },
+  "userManagement": {
+    "management": "إدارة المستخدمين",
+    "create": "إضافة مستخدم",
+    "edit": "تعديل مستخدم",
+    "delete": "حذف مستخدم",
+    "confirmDelete": "هل أنت متأكد من حذف هذا المستخدم؟"
   }
 }

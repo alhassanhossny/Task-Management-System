@@ -17,6 +17,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SecurityIcon from '@mui/icons-material/Security';
 import BackupIcon from '@mui/icons-material/Backup';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../store/auth.context';
 import { useDirection } from '../../hooks/useDirection';
@@ -45,6 +46,7 @@ export default function Sidebar({ drawerWidth, mobileOpen, onDrawerToggle }: Sid
   const adminItems = [
     { text: 'nav.settings', icon: <SettingsIcon />, path: '/settings' },
     { text: 'nav.audit', icon: <SecurityIcon />, path: '/audit' },
+    { text: 'nav.taskTitles', icon: <ListAltIcon />, path: '/task-titles' },
   ];
 
   const drawerContent = (

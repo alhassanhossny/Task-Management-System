@@ -141,10 +141,9 @@ export default function TasksPage() {
               <TableHead>
                 <TableRow>
                   <TableCell>{t('task.number')}</TableCell>
-                  <TableCell>{t('task.titleAr')}</TableCell>
+                  <TableCell>{t('task.title') || 'Title'}</TableCell>
                   <TableCell>{t('task.status')}</TableCell>
                   <TableCell>{t('task.createdBy')}</TableCell>
-                  <TableCell>{t('task.dueDate')}</TableCell>
                   <TableCell>{t('common.actions')}</TableCell>
                 </TableRow>
               </TableHead>
@@ -179,9 +178,6 @@ export default function TasksPage() {
                       </TableCell>
                       <TableCell>
                         {i18n.language === 'ar' ? task.createdByUser?.fullNameAr : task.createdByUser?.fullNameEn}
-                      </TableCell>
-                      <TableCell>
-                        {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : '-'}
                       </TableCell>
                       <TableCell>
                         <Tooltip title={t('task.view')}>

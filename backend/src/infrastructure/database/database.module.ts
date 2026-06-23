@@ -9,6 +9,7 @@ import { TaskAttachment } from '../../domain/entities/task-attachment.entity';
 import { Notification } from '../../domain/entities/notification.entity';
 import { AuditLog } from '../../domain/entities/audit-log.entity';
 import { Setting } from '../../domain/entities/setting.entity';
+import { TaskTitle } from '../../domain/entities/task-title.entity';
 
 @Global()
 @Module({
@@ -23,6 +24,7 @@ import { Setting } from '../../domain/entities/setting.entity';
       Notification,
       AuditLog,
       Setting,
+      TaskTitle,
     ]),
   ],
   exports: [

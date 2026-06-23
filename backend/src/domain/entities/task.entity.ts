@@ -4,6 +4,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Department } from './department.entity';
+import { TaskTitle } from './task-title.entity';
 import { TaskComment } from './task-comment.entity';
 import { TaskAttachment } from './task-attachment.entity';
 
@@ -42,6 +43,9 @@ export class Task {
   @Column({ name: 'assigned_to_department_id', nullable: true, type: 'int' })
   assignedToDepartmentId: number | null;
 
+  @Column({ name: 'task_title_id', type: 'int', nullable: true })
+  taskTitleId: number | null;
+
   @Column({ length: 50, default: 'draft' })
   status: string;
 
@@ -60,6 +64,10 @@ export class Task {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'created_by' })
   createdByUser: User;
+
+  @ManyToOne(() => TaskTitle)
+  @JoinColumn({ name: 'task_title_id' })
+  taskTitle: TaskTitle;
 
   @ManyToOne(() => Department)
   @JoinColumn({ name: 'source_department_id' })

@@ -264,10 +264,6 @@ export default function TaskDetailPage() {
                   <Typography variant="body2">{isRtl ? task.createdByUser?.fullNameAr : task.createdByUser?.fullNameEn}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="caption" color="text.secondary">{t('task.dueDate')}</Typography>
-                  <Typography variant="body2">{task.dueDate ? new Date(task.dueDate).toLocaleDateString() : '-'}</Typography>
-                </Box>
-                <Box>
                   <Typography variant="caption" color="text.secondary">{t('task.createdAt')}</Typography>
                   <Typography variant="body2">{new Date(task.createdAt).toLocaleString()}</Typography>
                 </Box>

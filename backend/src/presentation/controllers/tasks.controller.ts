@@ -17,13 +17,16 @@ export class TasksController {
 
   @Post()
   async create(@Body() createDto: CreateTaskDto, @Req() req: any) {
+    if (!createDto.sourceDepartmentId && req.user.departmentId) {
+      createDto.sourceDepartmentId = req.user.departmentId;
+    }
     const task = await this.taskService.create(createDto, req.user.id);
     
     await this.auditService.log({
       actionType: 'TASK_CREATED',
       entity: 'task',
       entityId: task.id,
-      newValue: { titleAr: task.titleAr, titleEn: task.titleEn },
+      newValue: { taskTitleId: task.taskTitleId, titleAr: task.titleAr, titleEn: task.titleEn },
       userId: req.user.id,
       ipAddress: req.ip,
     });

@@ -4,6 +4,7 @@ import { DepartmentService } from '../../application/services/department.service
 import { RoleService } from '../../application/services/role.service';
 import { SettingsService } from '../../application/services/settings.service';
 import { UserService } from '../../application/services/user.service';
+import { TaskTitleService } from '../../application/services/task-title.service';
 
 async function seed() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -13,6 +14,7 @@ async function seed() {
     const roleService = app.get(RoleService);
     const settingsService = app.get(SettingsService);
     const userService = app.get(UserService);
+    const taskTitleService = app.get(TaskTitleService);
 
     console.log('Seeding departments...');
     await departmentService.seedDefaultDepartments();
@@ -56,6 +58,26 @@ async function seed() {
     } catch (e) {
       console.log('Demo user already exists');
     }
+
+    console.log('Seeding task titles...');
+    const titles = [
+      { titleAr: 'تعطل جهاز كمبيوتر', titleEn: 'Computer Malfunction', sortOrder: 1 },
+      { titleAr: 'مشكلة شبكة', titleEn: 'Network Issue', sortOrder: 2 },
+      { titleAr: 'طلب برنامج جديد', titleEn: 'New Software Request', sortOrder: 3 },
+      { titleAr: 'صيانة طابعة', titleEn: 'Printer Maintenance', sortOrder: 4 },
+      { titleAr: 'مشكلة في نظام المستشفى', titleEn: 'Hospital System Issue', sortOrder: 5 },
+      { titleAr: 'طلب حساب جديد', titleEn: 'New Account Request', sortOrder: 6 },
+      { titleAr: 'استعادة بيانات', titleEn: 'Data Recovery', sortOrder: 7 },
+      { titleAr: 'تحديث نظام', titleEn: 'System Update', sortOrder: 8 },
+      { titleAr: 'تركيب جهاز جديد', titleEn: 'New Device Installation', sortOrder: 9 },
+      { titleAr: 'مشكلة أمان', titleEn: 'Security Issue', sortOrder: 10 },
+      { titleAr: 'دعم فني', titleEn: 'Technical Support', sortOrder: 11 },
+      { titleAr: 'أخرى', titleEn: 'Other', sortOrder: 12 },
+    ];
+    for (const t of titles) {
+      try { await taskTitleService.create(t); } catch { }
+    }
+    console.log(`${titles.length} task titles seeded`);
 
     console.log('Seed completed successfully!');
   } catch (error) {

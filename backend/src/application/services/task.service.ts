@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, ForbiddenException 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between, Brackets } from 'typeorm';
 import { Task } from '../../domain/entities/task.entity';
+import { TaskTitle } from '../../domain/entities/task-title.entity';
 import { CreateTaskDto, UpdateTaskDto, TaskFilterDto, TaskResponseDto, ChangeStatusDto } from '../dtos/task.dto';
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
@@ -20,17 +21,26 @@ export class TaskService {
   constructor(
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
+    @InjectRepository(TaskTitle)
+    private taskTitleRepository: Repository<TaskTitle>,
   ) {}
 
   async create(createDto: CreateTaskDto, userId: string): Promise<Task> {
     const taskNumber = await this.generateTaskNumber();
 
+    const taskTitle = await this.taskTitleRepository.findOne({ where: { id: createDto.taskTitleId } });
+    if (!taskTitle) {
+      throw new NotFoundException('Task title not found');
+    }
+
     const taskData: Partial<Task> = {
       ...createDto,
       taskNumber,
+      taskTitleId: createDto.taskTitleId,
+      titleAr: taskTitle.titleAr,
+      titleEn: taskTitle.titleEn,
       createdBy: userId,
       status: 'draft',
-      dueDate: createDto.dueDate ? new Date(createDto.dueDate) : undefined,
     };
     const task = this.taskRepository.create(taskData as any);
 
@@ -43,6 +53,7 @@ export class TaskService {
       .leftJoinAndSelect('task.targetDepartment', 'targetDepartment')
       .leftJoinAndSelect('task.assignedToDepartment', 'assignedToDepartment')
       .leftJoinAndSelect('task.createdByUser', 'createdByUser')
+      .leftJoinAndSelect('task.taskTitle', 'taskTitle')
       .where('task.isActive = :isActive', { isActive: true });
 
     if (filters.taskNumber) {
@@ -99,6 +110,7 @@ export class TaskService {
       .leftJoinAndSelect('task.targetDepartment', 'targetDepartment')
       .leftJoinAndSelect('task.assignedToDepartment', 'assignedToDepartment')
       .leftJoinAndSelect('task.createdByUser', 'createdByUser')
+      .leftJoinAndSelect('task.taskTitle', 'taskTitle')
       .where('task.createdBy = :userId', { userId })
       .andWhere('task.isActive = :isActive', { isActive: true });
 
@@ -123,6 +135,7 @@ export class TaskService {
         'targetDepartment',
         'assignedToDepartment',
         'createdByUser',
+        'taskTitle',
         'comments',
         'comments.user',
         'comments.replies',
@@ -147,6 +160,7 @@ export class TaskService {
         'targetDepartment',
         'assignedToDepartment',
         'createdByUser',
+        'taskTitle',
       ],
     });
 
@@ -162,6 +176,15 @@ export class TaskService {
 
     if (!['draft', 'new'].includes(task.status)) {
       throw new BadRequestException('Task can only be edited in Draft or New status');
+    }
+
+    if (updateDto.taskTitleId) {
+      const taskTitle = await this.taskTitleRepository.findOne({ where: { id: updateDto.taskTitleId } });
+      if (!taskTitle) {
+        throw new NotFoundException('Task title not found');
+      }
+      (task as any).titleAr = taskTitle.titleAr;
+      (task as any).titleEn = taskTitle.titleEn;
     }
 
     Object.assign(task, updateDto);

@@ -22,6 +22,7 @@ import DepartmentsPage from './pages/DepartmentsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import SettingsPage from './pages/SettingsPage';
 import AuditPage from './pages/AuditPage';
+import TaskTitlesPage from './pages/TaskTitlesPage';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -69,6 +70,7 @@ function AppContent() {
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="audit" element={<AuditPage />} />
+              <Route path="task-titles" element={<TaskTitlesPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

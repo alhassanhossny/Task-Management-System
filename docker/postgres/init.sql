@@ -39,6 +39,17 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create task_titles table
+CREATE TABLE IF NOT EXISTS task_titles (
+    id SERIAL PRIMARY KEY,
+    title_ar VARCHAR(500) NOT NULL,
+    title_en VARCHAR(500) NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    sort_order INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create tasks table
 CREATE TABLE IF NOT EXISTS tasks (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -52,6 +63,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     created_by UUID REFERENCES users(id),
     assigned_to UUID REFERENCES users(id),
     assigned_to_department_id INTEGER REFERENCES departments(id),
+    task_title_id INTEGER REFERENCES task_titles(id),
     status VARCHAR(50) DEFAULT 'draft',
     due_date TIMESTAMP,
     is_active BOOLEAN DEFAULT true,

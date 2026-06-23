@@ -1,48 +1,8 @@
 import { IsString, IsOptional, IsNumber, IsDateString } from 'class-validator';
 
 export class CreateTaskDto {
-  @IsString()
-  titleAr: string;
-
-  @IsString()
-  titleEn: string;
-
-  @IsOptional()
-  @IsString()
-  descriptionAr?: string;
-
-  @IsOptional()
-  @IsString()
-  descriptionEn?: string;
-
-  @IsOptional()
   @IsNumber()
-  sourceDepartmentId?: number;
-
-  @IsOptional()
-  @IsNumber()
-  targetDepartmentId?: number;
-
-  @IsString()
-  assignedTo: string;
-
-  @IsOptional()
-  @IsNumber()
-  assignedToDepartmentId?: number;
-
-  @IsOptional()
-  @IsDateString()
-  dueDate?: string;
-}
-
-export class UpdateTaskDto {
-  @IsOptional()
-  @IsString()
-  titleAr?: string;
-
-  @IsOptional()
-  @IsString()
-  titleEn?: string;
+  taskTitleId: number;
 
   @IsOptional()
   @IsString()
@@ -67,10 +27,36 @@ export class UpdateTaskDto {
   @IsOptional()
   @IsNumber()
   assignedToDepartmentId?: number;
+}
+
+export class UpdateTaskDto {
+  @IsOptional()
+  @IsNumber()
+  taskTitleId?: number;
 
   @IsOptional()
-  @IsDateString()
-  dueDate?: string;
+  @IsString()
+  descriptionAr?: string;
+
+  @IsOptional()
+  @IsString()
+  descriptionEn?: string;
+
+  @IsOptional()
+  @IsNumber()
+  sourceDepartmentId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  targetDepartmentId?: number;
+
+  @IsOptional()
+  @IsString()
+  assignedTo?: string;
+
+  @IsOptional()
+  @IsNumber()
+  assignedToDepartmentId?: number;
 
   @IsOptional()
   @IsString()
@@ -142,8 +128,10 @@ export class TaskResponseDto {
   assignedToDepartmentId: number;
   assignedToDepartmentNameAr: string;
   assignedToDepartmentNameEn: string;
+  taskTitleId: number;
+  taskTitleAr: string;
+  taskTitleEn: string;
   status: string;
-  dueDate: string;
   createdAt: string;
   updatedAt: string;
   commentCount: number;
