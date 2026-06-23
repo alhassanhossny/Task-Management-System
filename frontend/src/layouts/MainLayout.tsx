@@ -30,8 +30,8 @@ export default function MainLayout() {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-          ...(isRtl ? { mr: { md: `${DRAWER_WIDTH}px` } } : { ml: { md: `${DRAWER_WIDTH}px` } }),
+          width: { md: 'calc(100% - 24px)' },
+          ...(isRtl ? { mr: '24px' } : { ml: '24px' }),
           backgroundColor: '#f5f5f5',
           minHeight: '100vh',
         }}

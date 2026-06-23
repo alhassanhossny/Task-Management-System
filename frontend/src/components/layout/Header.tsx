@@ -62,8 +62,8 @@ export default function Header({ drawerWidth, onDrawerToggle }: HeaderProps) {
     <AppBar
       position="fixed"
       sx={{
-        width: { md: `calc(100% - ${drawerWidth}px)` },
-        ...(isRtl ? { mr: { md: `${drawerWidth}px` } } : { ml: { md: `${drawerWidth}px` } }),
+        width: { md: 'calc(100% - 24px)' },
+        ...(isRtl ? { mr: '24px' } : { ml: '24px' }),
         backgroundColor: '#fff',
         color: '#333',
         boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
