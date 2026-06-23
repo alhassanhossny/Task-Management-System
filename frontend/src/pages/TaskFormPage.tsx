@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useTranslation } from 'react-i18next';
+import { useDirection } from '../hooks/useDirection';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -19,6 +20,7 @@ export default function TaskFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { arrowFlip } = useDirection();
   const isEdit = !!id;
 
   const [loading, setLoading] = useState(isEdit);
@@ -116,7 +118,7 @@ export default function TaskFormPage() {
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
         <IconButton onClick={() => navigate(-1)}>
-          <ArrowBackIcon />
+          <ArrowBackIcon sx={{ transform: arrowFlip }} />
         </IconButton>
         <Typography variant="h4">{isEdit ? t('task.edit') : t('task.create')}</Typography>
       </Box>

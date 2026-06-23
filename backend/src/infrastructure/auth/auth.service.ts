@@ -118,7 +118,7 @@ export class AuthService {
   }
 
   async logout(userId: string) {
-    await this.userRepository.update(userId, { refreshToken: null });
+    await this.userRepository.update(userId, { refreshToken: undefined });
   }
 
   async getProfile(userId: string) {

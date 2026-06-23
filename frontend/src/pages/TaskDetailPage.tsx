@@ -25,6 +25,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { useDirection } from '../hooks/useDirection';
 import api from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
@@ -38,6 +39,7 @@ export default function TaskDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const { arrowFlip } = useDirection();
   const [task, setTask] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState('');
@@ -117,7 +119,7 @@ export default function TaskDetailPage() {
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
         <IconButton onClick={() => navigate('/tasks')}>
-          <ArrowBackIcon />
+          <ArrowBackIcon sx={{ transform: arrowFlip }} />
         </IconButton>
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
           {t('task.view')} - {task.taskNumber}

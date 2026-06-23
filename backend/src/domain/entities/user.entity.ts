@@ -33,17 +33,17 @@ export class User {
   @Column({ name: 'role_id' })
   roleId: number;
 
-  @Column({ name: 'department_id', nullable: true })
-  departmentId: number;
+  @Column({ name: 'department_id', type: 'int', nullable: true })
+  departmentId: number | null;
 
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
-  @Column({ name: 'refresh_token', nullable: true })
-  refreshToken: string;
+  @Column({ name: 'refresh_token', type: 'varchar', nullable: true })
+  refreshToken: string | null;
 
-  @Column({ name: 'last_login', nullable: true })
-  lastLogin: Date;
+  @Column({ name: 'last_login', type: 'timestamp', nullable: true })
+  lastLogin: Date | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -51,8 +51,8 @@ export class User {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @Column({ name: 'created_by', nullable: true })
-  createdBy: string;
+  @Column({ name: 'created_by', type: 'varchar', nullable: true })
+  createdBy: string | null;
 
   @ManyToOne(() => Role)
   @JoinColumn({ name: 'role_id' })

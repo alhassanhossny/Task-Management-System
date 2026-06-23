@@ -19,16 +19,16 @@ export class Notification {
   titleEn: string;
 
   @Column({ name: 'message_ar', type: 'text', nullable: true })
-  messageAr: string;
+  messageAr: string | null;
 
   @Column({ name: 'message_en', type: 'text', nullable: true })
-  messageEn: string;
+  messageEn: string | null;
 
-  @Column({ name: 'entity_type', length: 50, nullable: true })
-  entityType: string;
+  @Column({ name: 'entity_type', type: 'varchar', length: 50, nullable: true })
+  entityType: string | null;
 
-  @Column({ name: 'entity_id', length: 50, nullable: true })
-  entityId: string;
+  @Column({ name: 'entity_id', type: 'varchar', length: 50, nullable: true })
+  entityId: string | null;
 
   @Column({ name: 'is_read', default: false })
   isRead: boolean;

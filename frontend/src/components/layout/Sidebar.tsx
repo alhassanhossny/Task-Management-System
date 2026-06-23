@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -20,6 +19,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import BackupIcon from '@mui/icons-material/Backup';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../store/auth.context';
+import { useDirection } from '../../hooks/useDirection';
 
 interface SidebarProps {
   drawerWidth: number;
@@ -29,6 +29,7 @@ interface SidebarProps {
 
 export default function Sidebar({ drawerWidth, mobileOpen, onDrawerToggle }: SidebarProps) {
   const { t, i18n } = useTranslation();
+  const { drawerAnchor } = useDirection();
   const location = useLocation();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
@@ -124,6 +125,7 @@ export default function Sidebar({ drawerWidth, mobileOpen, onDrawerToggle }: Sid
         variant="temporary"
         open={mobileOpen}
         onClose={onDrawerToggle}
+        anchor={drawerAnchor}
         ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: 'block', md: 'none' },
@@ -134,6 +136,7 @@ export default function Sidebar({ drawerWidth, mobileOpen, onDrawerToggle }: Sid
       </Drawer>
       <Drawer
         variant="permanent"
+        anchor={drawerAnchor}
         sx={{
           display: { xs: 'none', md: 'block' },
           '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },

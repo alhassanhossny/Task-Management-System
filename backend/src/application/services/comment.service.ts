@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { TaskComment } from '../../domain/entities/task-comment.entity';
 import { CreateCommentDto } from '../dtos/comment.dto';
 
@@ -12,24 +12,23 @@ export class CommentService {
   ) {}
 
   async create(taskId: string, createDto: CreateCommentDto, userId: string): Promise<TaskComment> {
-    const comment = this.commentRepository.create({
+    const commentData: any = {
       taskId,
       userId,
       content: createDto.content,
       parentId: createDto.parentId || null,
-      mentions: createDto.mentions || [],
-    });
-
-    return this.commentRepository.save(comment);
+      mentions: createDto.mentions || null,
+    };
+    const comment = this.commentRepository.create(commentData);
+    return this.commentRepository.save(comment) as any;
   }
 
   async findByTask(taskId: string): Promise<TaskComment[]> {
     const comments = await this.commentRepository.find({
-      where: { taskId, parentId: null },
+      where: { taskId, parentId: IsNull() },
       relations: ['user', 'replies', 'replies.user'],
       order: { createdAt: 'ASC' },
     });
-
     return comments;
   }
 
@@ -38,21 +37,17 @@ export class CommentService {
       where: { id },
       relations: ['user', 'task'],
     });
-
     if (!comment) {
       throw new NotFoundException('Comment not found');
     }
-
     return comment;
   }
 
   async update(id: string, content: string, userId: string): Promise<TaskComment> {
     const comment = await this.findOne(id);
-
     if (comment.userId !== userId) {
       throw new ForbiddenException('You can only edit your own comments');
     }
-
     comment.content = content;
     comment.isEdited = true;
     return this.commentRepository.save(comment);
@@ -60,11 +55,9 @@ export class CommentService {
 
   async delete(id: string, userId: string): Promise<void> {
     const comment = await this.findOne(id);
-
     if (comment.userId !== userId) {
       throw new ForbiddenException('You can only delete your own comments');
     }
-
     await this.commentRepository.softDelete(id);
   }
 

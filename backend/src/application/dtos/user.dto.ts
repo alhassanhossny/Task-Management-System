@@ -71,10 +71,10 @@ export class UserResponseDto {
   roleId: number;
   roleNameAr: string;
   roleNameEn: string;
-  departmentId: number;
+  departmentId: number | null;
   departmentNameAr: string;
   departmentNameEn: string;
   isActive: boolean;
-  lastLogin: Date;
+  lastLogin: Date | null;
   createdAt: Date;
 }

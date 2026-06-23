@@ -13,7 +13,7 @@ export class TaskComment {
   @Column({ name: 'user_id' })
   userId: string;
 
-  @Column({ name: 'parent_id', nullable: true })
+  @Column({ name: 'parent_id', type: 'varchar', nullable: true })
   parentId: string;
 
   @Column({ type: 'text' })

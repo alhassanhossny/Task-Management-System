@@ -57,6 +57,7 @@ export default function SettingsPage() {
 }
 
 function SettingRow({ setting, onSave }: { setting: any; onSave: (key: string, value: string) => void }) {
+  const { t } = useTranslation();
   const [value, setValue] = React.useState(setting.value);
   const [dirty, setDirty] = React.useState(false);
 

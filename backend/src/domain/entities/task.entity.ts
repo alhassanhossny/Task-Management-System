@@ -22,31 +22,31 @@ export class Task {
   titleEn: string;
 
   @Column({ name: 'description_ar', type: 'text', nullable: true })
-  descriptionAr: string;
+  descriptionAr: string | null;
 
   @Column({ name: 'description_en', type: 'text', nullable: true })
-  descriptionEn: string;
+  descriptionEn: string | null;
 
-  @Column({ name: 'source_department_id', nullable: true })
-  sourceDepartmentId: number;
+  @Column({ name: 'source_department_id', nullable: true, type: 'int' })
+  sourceDepartmentId: number | null;
 
-  @Column({ name: 'target_department_id', nullable: true })
-  targetDepartmentId: number;
+  @Column({ name: 'target_department_id', nullable: true, type: 'int' })
+  targetDepartmentId: number | null;
 
-  @Column({ name: 'created_by' })
+  @Column({ name: 'created_by', type: 'varchar' })
   createdBy: string;
 
-  @Column({ name: 'assigned_to', nullable: true })
-  assignedTo: string;
+  @Column({ name: 'assigned_to', nullable: true, type: 'varchar' })
+  assignedTo: string | null;
 
-  @Column({ name: 'assigned_to_department_id', nullable: true })
-  assignedToDepartmentId: number;
+  @Column({ name: 'assigned_to_department_id', nullable: true, type: 'int' })
+  assignedToDepartmentId: number | null;
 
   @Column({ length: 50, default: 'draft' })
   status: string;
 
-  @Column({ name: 'due_date', nullable: true })
-  dueDate: Date;
+  @Column({ name: 'due_date', nullable: true, type: 'timestamp' })
+  dueDate: Date | null;
 
   @Column({ name: 'is_active', default: true })
   isActive: boolean;

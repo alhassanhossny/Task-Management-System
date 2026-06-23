@@ -18,6 +18,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../store/auth.context';
+import { useDirection } from '../../hooks/useDirection';
 import api from '../../services/api';
 
 interface HeaderProps {
@@ -28,6 +29,7 @@ interface HeaderProps {
 export default function Header({ drawerWidth, onDrawerToggle }: HeaderProps) {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
+  const { isRtl } = useDirection();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [langAnchorEl, setLangAnchorEl] = useState<null | HTMLElement>(null);
@@ -61,7 +63,7 @@ export default function Header({ drawerWidth, onDrawerToggle }: HeaderProps) {
       position="fixed"
       sx={{
         width: { md: `calc(100% - ${drawerWidth}px)` },
-        ml: { md: `${drawerWidth}px` },
+        ...(isRtl ? { mr: { md: `${drawerWidth}px` } } : { ml: { md: `${drawerWidth}px` } }),
         backgroundColor: '#fff',
         color: '#333',
         boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
@@ -70,9 +72,9 @@ export default function Header({ drawerWidth, onDrawerToggle }: HeaderProps) {
       <Toolbar>
         <IconButton
           color="inherit"
-          edge="start"
+          edge={isRtl ? 'end' : 'start'}
           onClick={onDrawerToggle}
-          sx={{ mr: 2, display: { md: 'none' } }}
+          sx={{ [isRtl ? 'ml' : 'mr']: 2, display: { md: 'none' } }}
         >
           <MenuIcon />
         </IconButton>

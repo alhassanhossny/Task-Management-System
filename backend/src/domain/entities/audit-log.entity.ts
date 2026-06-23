@@ -16,19 +16,19 @@ export class AuditLog {
   entityId: string;
 
   @Column({ name: 'old_value', type: 'jsonb', nullable: true })
-  oldValue: any;
+  oldValue: any | null;
 
   @Column({ name: 'new_value', type: 'jsonb', nullable: true })
-  newValue: any;
+  newValue: any | null;
 
-  @Column({ name: 'user_id', nullable: true })
-  userId: string;
+  @Column({ name: 'user_id', type: 'varchar', nullable: true })
+  userId: string | null;
 
-  @Column({ name: 'ip_address', length: 50, nullable: true })
-  ipAddress: string;
+  @Column({ name: 'ip_address', type: 'varchar', length: 50, nullable: true })
+  ipAddress: string | null;
 
-  @Column({ name: 'user_agent', length: 500, nullable: true })
-  userAgent: string;
+  @Column({ name: 'user_agent', type: 'varchar', length: 500, nullable: true })
+  userAgent: string | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

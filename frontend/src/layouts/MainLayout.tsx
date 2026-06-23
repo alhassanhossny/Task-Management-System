@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
+import { useTranslation } from 'react-i18next';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
 
 const DRAWER_WIDTH = 260;
 
 export default function MainLayout() {
+  const { i18n } = useTranslation();
+  const isRtl = i18n.language === 'ar';
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -28,6 +31,7 @@ export default function MainLayout() {
           flexGrow: 1,
           p: 3,
           width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
+          ...(isRtl ? { mr: { md: `${DRAWER_WIDTH}px` } } : { ml: { md: `${DRAWER_WIDTH}px` } }),
           backgroundColor: '#f5f5f5',
           minHeight: '100vh',
         }}

@@ -20,7 +20,7 @@ export class AuditService {
     ipAddress?: string;
     userAgent?: string;
   }): Promise<AuditLog> {
-    const auditLog = this.auditLogRepository.create({
+    const auditLogData: Partial<AuditLog> = {
       actionType: params.actionType,
       entity: params.entity,
       entityId: params.entityId,
@@ -29,9 +29,9 @@ export class AuditService {
       userId: params.userId || null,
       ipAddress: params.ipAddress || null,
       userAgent: params.userAgent || null,
-    });
-
-    return this.auditLogRepository.save(auditLog);
+    };
+    const auditLog = this.auditLogRepository.create(auditLogData as any);
+    return this.auditLogRepository.save(auditLog as any) as any;
   }
 
   async findByEntity(entity: string, entityId: string): Promise<AuditLog[]> {
@@ -49,7 +49,6 @@ export class AuditService {
       skip: (page - 1) * limit,
       take: limit,
     });
-
     return { data, total };
   }
 
@@ -61,7 +60,6 @@ export class AuditService {
       skip: (page - 1) * limit,
       take: limit,
     });
-
     return { data, total };
   }
 }

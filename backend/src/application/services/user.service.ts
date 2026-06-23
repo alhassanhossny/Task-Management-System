@@ -70,7 +70,7 @@ export class UserService {
 
     if (updateUserDto.password) {
       const salt = await bcrypt.genSalt();
-      updateUserDto['passwordHash'] = await bcrypt.hash(updateUserDto.password, salt);
+      (user as any).passwordHash = await bcrypt.hash(updateUserDto.password, salt);
       delete updateUserDto.password;
     }
 

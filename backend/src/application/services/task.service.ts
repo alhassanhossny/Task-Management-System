@@ -25,15 +25,16 @@ export class TaskService {
   async create(createDto: CreateTaskDto, userId: string): Promise<Task> {
     const taskNumber = await this.generateTaskNumber();
 
-    const task = this.taskRepository.create({
+    const taskData: Partial<Task> = {
       ...createDto,
       taskNumber,
       createdBy: userId,
       status: 'draft',
-      dueDate: createDto.dueDate ? new Date(createDto.dueDate) : null,
-    });
+      dueDate: createDto.dueDate ? new Date(createDto.dueDate) : undefined,
+    };
+    const task = this.taskRepository.create(taskData as any);
 
-    return this.taskRepository.save(task);
+    return this.taskRepository.save(task as any) as any;
   }
 
   async findAll(filters: TaskFilterDto): Promise<{ data: Task[]; total: number }> {
