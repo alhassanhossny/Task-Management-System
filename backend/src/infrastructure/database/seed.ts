@@ -42,21 +42,42 @@ async function seed() {
       console.log('Admin user already exists');
     }
 
-    console.log('Creating demo user...');
-    try {
-      await userService.create({
-        username: 'user',
-        email: 'user@hospital.local',
-        password: 'User@2024',
-        fullNameAr: 'مستخدم عادي',
-        fullNameEn: 'Regular User',
-        roleId: 2,
-        departmentId: 2,
-        isActive: true,
-      });
-      console.log('Demo user created: user / User@2024');
-    } catch (e) {
-      console.log('Demo user already exists');
+    console.log('Creating department users...');
+    const deptNames = [
+      { ar: 'تقنية المعلومات', en: 'IT' },
+      { ar: 'الاستقبال', en: 'Reception' },
+      { ar: 'الطوارئ', en: 'Emergency' },
+      { ar: 'محاسبة المرضى', en: 'Patients Accounting' },
+      { ar: 'الخزينة', en: 'Treasury' },
+      { ar: 'المحاسبة العامة', en: 'General Accounting' },
+      { ar: 'التسويق', en: 'Marketing' },
+      { ar: 'العقود', en: 'Contracts' },
+      { ar: 'العيادات الخارجية', en: 'Out Clinics' },
+      { ar: 'الصيدلية الخارجية', en: 'Out Pharmacy' },
+      { ar: 'الصيدلية الداخلية', en: 'Inner Pharmacy' },
+      { ar: 'المختبر', en: 'Lab' },
+      { ar: 'المستودعات', en: 'Inventory' },
+      { ar: 'السكرتارية', en: 'Secretary' },
+      { ar: 'الموارد البشرية', en: 'HR' },
+      { ar: 'الإدارة', en: 'Management' },
+    ];
+    for (let i = 1; i < deptNames.length; i++) {
+      const deptId = i + 1;
+      try {
+        await userService.create({
+          username: `user${deptId}`,
+          email: `user${deptId}@hospital.local`,
+          password: '123',
+          fullNameAr: `مستخدم ${deptNames[i].ar}`,
+          fullNameEn: `${deptNames[i].en} User`,
+          roleId: 2,
+          departmentId: deptId,
+          isActive: true,
+        });
+        console.log(`User created: user${deptId} / 123 (${deptNames[i].en})`);
+      } catch (e) {
+        console.log(`User user${deptId} already exists`);
+      }
     }
 
     console.log('Seeding task titles...');

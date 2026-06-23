@@ -34,15 +34,12 @@ export default function DashboardPage() {
   const cards = isAdmin
     ? [
         { label: t('dashboard.totalTasks'), value: stats?.total || 0, color: '#1976d2' },
-        { label: t('dashboard.openTasks'), value: stats?.openTasks || 0, color: '#ff9800' },
-        { label: t('dashboard.closedTasks'), value: stats?.closedTasks || 0, color: '#4caf50' },
+        { label: t('dashboard.assignedTasks'), value: stats?.assignedTasks || 0, color: '#2196f3' },
+        { label: t('dashboard.completedTasks'), value: stats?.completedTasks || 0, color: '#4caf50' },
         { label: t('dashboard.cancelledTasks'), value: stats?.cancelledTasks || 0, color: '#f44336' },
       ]
     : [
-        { label: t('dashboard.openTasks'), value: stats?.openTasks || 0, color: '#ff9800' },
-        { label: t('dashboard.assignedTasks'), value: stats?.assignedTasks || 0, color: '#1976d2' },
-        { label: t('dashboard.waitingTasks'), value: stats?.waitingTasks || 0, color: '#9c27b0' },
-        { label: t('dashboard.completedTasks'), value: stats?.completedTasks || 0, color: '#4caf50' },
+        { label: t('dashboard.assignedTasks'), value: stats?.assignedTasks || 0, color: '#2196f3' },
       ];
 
   return (

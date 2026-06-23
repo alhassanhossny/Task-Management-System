@@ -9,7 +9,6 @@ import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -17,22 +16,24 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import EditIcon from '@mui/icons-material/Edit';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useDirection } from '../hooks/useDirection';
+import { useAuth } from '../store/auth.context';
 import api from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const statusColors: Record<string, string> = {
-  draft: '#9e9e9e', new: '#2196f3', assigned: '#ff9800',
-  in_progress: '#1976d2', waiting_for_response: '#9c27b0',
-  completed: '#4caf50', closed: '#2e7d32', cancelled: '#f44336',
+  assigned: '#2196f3',
+  completed: '#4caf50',
+  cancelled: '#f44336',
 };
 
 export default function TaskDetailPage() {
@@ -40,17 +41,15 @@ export default function TaskDetailPage() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { arrowFlip } = useDirection();
+  const { user } = useAuth();
   const [task, setTask] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState('');
-  const [status, setStatus] = useState('');
-  const [files, setFiles] = useState<File[]>([]);
 
   const fetchTask = useCallback(async () => {
     try {
       const res = await api.get(`/tasks/${id}`);
       setTask(res.data.data);
-      setStatus(res.data.data.status);
     } catch {
       toast.error('Failed to load task');
     } finally {
@@ -60,9 +59,9 @@ export default function TaskDetailPage() {
 
   useEffect(() => { fetchTask(); }, [fetchTask]);
 
-  const handleStatusChange = async () => {
+  const handleStatusChange = async (newStatus: string) => {
     try {
-      await api.put(`/tasks/${id}/status`, { status });
+      await api.put(`/tasks/${id}/status`, { status: newStatus });
       toast.success(t('common.success'));
       fetchTask();
     } catch (err: any) {
@@ -114,6 +113,9 @@ export default function TaskDetailPage() {
   if (!task) return <Typography>{t('common.noData')}</Typography>;
 
   const isRtl = i18n.language === 'ar';
+  const canChangeStatus = (user?.departmentId === task.targetDepartmentId || user?.permissions?.includes('*'))
+    && task.status === 'assigned';
+  const isCreator = user?.id === task.createdBy;
 
   return (
     <Box>
@@ -124,11 +126,6 @@ export default function TaskDetailPage() {
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
           {t('task.view')} - {task.taskNumber}
         </Typography>
-        {['draft', 'new'].includes(task.status) && (
-          <Button variant="outlined" startIcon={<EditIcon />} onClick={() => navigate(`/tasks/${id}/edit`)}>
-            {t('common.edit')}
-          </Button>
-        )}
       </Box>
 
       <Grid container spacing={3}>
@@ -142,25 +139,30 @@ export default function TaskDetailPage() {
                 {isRtl ? task.descriptionAr : task.descriptionEn}
               </Typography>
 
-              <Divider sx={{ my: 2 }} />
-
-              <Typography variant="h6" gutterBottom>{t('task.status')}</Typography>
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                <TextField
-                  select
-                  size="small"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  sx={{ minWidth: 200 }}
-                >
-                  {Object.entries(t('task.statuses', { returnObjects: true }) || {}).map(([key, val]) => (
-                    <MenuItem key={key} value={key}>{val as string}</MenuItem>
-                  ))}
-                </TextField>
-                <Button variant="contained" onClick={handleStatusChange}>
-                  {t('common.save')}
-                </Button>
-              </Box>
+              {canChangeStatus && (
+                <>
+                  <Divider sx={{ my: 2 }} />
+                  <Typography variant="h6" gutterBottom>{t('task.status')}</Typography>
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      startIcon={<CheckCircleIcon />}
+                      onClick={() => handleStatusChange('completed')}
+                    >
+                      {t('task.setCompleted')}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<CancelIcon />}
+                      onClick={() => handleStatusChange('cancelled')}
+                    >
+                      {t('task.setCancelled')}
+                    </Button>
+                  </Box>
+                </>
+              )}
 
               <Divider sx={{ my: 2 }} />
 
@@ -256,17 +258,41 @@ export default function TaskDetailPage() {
                   <Chip
                     label={t(`task.statuses.${task.status}`)}
                     size="small"
-                    sx={{ backgroundColor: statusColors[task.status], color: '#fff', mt: 0.5 }}
+                    sx={{ backgroundColor: statusColors[task.status] || '#9e9e9e', color: '#fff', mt: 0.5 }}
                   />
                 </Box>
                 <Box>
+                  <Typography variant="caption" color="text.secondary">{t('task.sourceDepartment')}</Typography>
+                  <Typography variant="body2">
+                    {isRtl ? task.sourceDepartment?.nameAr : task.sourceDepartment?.nameEn}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="caption" color="text.secondary">{t('task.targetDepartment')}</Typography>
+                  <Typography variant="body2">
+                    {isRtl ? task.targetDepartment?.nameAr : task.targetDepartment?.nameEn}
+                  </Typography>
+                </Box>
+                <Box>
                   <Typography variant="caption" color="text.secondary">{t('task.createdBy')}</Typography>
-                  <Typography variant="body2">{isRtl ? task.createdByUser?.fullNameAr : task.createdByUser?.fullNameEn}</Typography>
+                  <Typography variant="body2">
+                    {isRtl ? task.createdByUser?.fullNameAr : task.createdByUser?.fullNameEn}
+                  </Typography>
                 </Box>
                 <Box>
                   <Typography variant="caption" color="text.secondary">{t('task.createdAt')}</Typography>
-                  <Typography variant="body2">{new Date(task.createdAt).toLocaleString()}</Typography>
+                  <Typography variant="body2">
+                    {task.createdAt ? new Date(task.createdAt).toLocaleString() : '--'}
+                  </Typography>
                 </Box>
+                {task.submittedAt && (
+                  <Box>
+                    <Typography variant="caption" color="text.secondary">{t('task.submittedAt')}</Typography>
+                    <Typography variant="body2">
+                      {new Date(task.submittedAt).toLocaleString()}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             </CardContent>
           </Card>

@@ -45,7 +45,7 @@ export class TasksController {
   @Get('dashboard')
   async getDashboard(@Req() req: any) {
     const isAdmin = req.user.permissions.includes('*');
-    return this.taskService.getDashboardStats(req.user.id, isAdmin);
+    return this.taskService.getDashboardStats(req.user.id, isAdmin, req.user.departmentId);
   }
 
   @Get(':id')
@@ -82,8 +82,9 @@ export class TasksController {
     @Body() changeStatusDto: ChangeStatusDto,
     @Req() req: any,
   ) {
+    const isAdmin = req.user.permissions?.includes('*');
     const oldTask = await this.taskService.findOne(id);
-    const task = await this.taskService.changeStatus(id, changeStatusDto, req.user.id);
+    const task = await this.taskService.changeStatus(id, changeStatusDto, req.user.id, req.user.departmentId, isAdmin);
 
     await this.auditService.log({
       actionType: 'STATUS_CHANGED',

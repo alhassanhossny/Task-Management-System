@@ -35,21 +35,20 @@
     "sourceDepartment": "Source Department",
     "targetDepartment": "Target Department",
     "createdBy": "Created By",
-    "assignedTo": "Assigned To",
-    "dueDate": "Due Date",
+    "submittedAt": "Submitted At",
     "comments": "Comments",
     "attachments": "Attachments",
     "noTasks": "No tasks found",
     "statuses": {
-      "draft": "Draft",
-      "new": "New",
       "assigned": "Assigned",
-      "in_progress": "In Progress",
-      "waiting_for_response": "Waiting for Response",
       "completed": "Completed",
-      "closed": "Closed",
       "cancelled": "Cancelled"
-    }
+    },
+    "setCompleted": "Complete",
+    "setCancelled": "Cancel",
+    "targetDepartment": "Target Department",
+    "sourceDepartment": "Source Department",
+    "followUp": "Follow-up History"
   },
   "comment": {
     "add": "Add Comment",
@@ -104,10 +103,10 @@
   "dashboard": {
     "welcome": "Welcome to TASK System",
     "totalTasks": "Total Tasks",
-    "openTasks": "Open Tasks",
     "assignedTasks": "Assigned Tasks",
-    "waitingTasks": "Waiting Tasks",
     "completedTasks": "Completed Tasks",
+    "cancelledTasks": "Cancelled",
+    "tasksByDepartment": "Tasks by Department",
     "myTasks": "My Tasks"
   },
   "notification": {

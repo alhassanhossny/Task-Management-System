@@ -25,13 +25,8 @@ import api from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const statusColors: Record<string, string> = {
-  draft: '#9e9e9e',
-  new: '#2196f3',
-  assigned: '#ff9800',
-  in_progress: '#1976d2',
-  waiting_for_response: '#9c27b0',
+  assigned: '#2196f3',
   completed: '#4caf50',
-  closed: '#2e7d32',
   cancelled: '#f44336',
 };
 

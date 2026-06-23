@@ -6,13 +6,8 @@ import { TaskTitle } from '../../domain/entities/task-title.entity';
 import { CreateTaskDto, UpdateTaskDto, TaskFilterDto, TaskResponseDto, ChangeStatusDto } from '../dtos/task.dto';
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
-  draft: ['new', 'cancelled'],
-  new: ['assigned', 'cancelled'],
-  assigned: ['in_progress', 'cancelled'],
-  in_progress: ['waiting_for_response', 'completed'],
-  waiting_for_response: ['in_progress'],
-  completed: ['closed'],
-  closed: [],
+  assigned: ['completed', 'cancelled'],
+  completed: [],
   cancelled: [],
 };
 
@@ -40,7 +35,7 @@ export class TaskService {
       titleAr: taskTitle.titleAr,
       titleEn: taskTitle.titleEn,
       createdBy: userId,
-      status: 'new',
+      status: 'assigned',
       submittedAt: new Date(),
     };
     const task = this.taskRepository.create(taskData as any);
@@ -171,8 +166,8 @@ export class TaskService {
   async update(id: string, updateDto: UpdateTaskDto): Promise<Task> {
     const task = await this.findOne(id);
 
-    if (!['draft', 'new'].includes(task.status)) {
-      throw new BadRequestException('Task can only be edited in Draft or New status');
+    if (task.status !== 'assigned') {
+      throw new BadRequestException('Task can only be edited in Assigned status');
     }
 
     if (updateDto.taskTitleId) {
@@ -188,7 +183,7 @@ export class TaskService {
     return this.taskRepository.save(task);
   }
 
-  async changeStatus(id: string, changeStatusDto: ChangeStatusDto, userId: string): Promise<Task> {
+  async changeStatus(id: string, changeStatusDto: ChangeStatusDto, userId: string, departmentId?: number, isAdmin?: boolean): Promise<Task> {
     const task = await this.findOne(id);
     const newStatus = changeStatusDto.status;
     const currentStatus = task.status;
@@ -200,22 +195,22 @@ export class TaskService {
       );
     }
 
-    if (currentStatus === 'draft' && newStatus === 'new') {
-      task.submittedAt = new Date();
+    if (!isAdmin && task.targetDepartmentId && task.targetDepartmentId !== departmentId) {
+      throw new ForbiddenException('Only the target department can change task status');
     }
 
     task.status = newStatus;
     return this.taskRepository.save(task);
   }
 
-  async getDashboardStats(userId: string, isAdmin: boolean): Promise<any> {
+  async getDashboardStats(userId: string, isAdmin: boolean, departmentId?: number): Promise<any> {
     if (isAdmin) {
       const total = await this.taskRepository.count({ where: { isActive: true } });
-      const openTasks = await this.taskRepository.count({
-        where: { isActive: true, status: 'in_progress' },
+      const assignedTasks = await this.taskRepository.count({
+        where: { isActive: true, status: 'assigned' },
       });
-      const closedTasks = await this.taskRepository.count({
-        where: { isActive: true, status: 'closed' },
+      const completedTasks = await this.taskRepository.count({
+        where: { isActive: true, status: 'completed' },
       });
       const cancelledTasks = await this.taskRepository.count({
         where: { isActive: true, status: 'cancelled' },
@@ -233,20 +228,14 @@ export class TaskService {
         .addGroupBy('department.nameEn')
         .getRawMany();
 
-      return { total, openTasks, closedTasks, cancelledTasks, deptStats };
+      return { total, assignedTasks, completedTasks, cancelledTasks, deptStats };
     }
 
-    const openTasks = await this.taskRepository.count({
-      where: { createdBy: userId, isActive: true, status: 'in_progress' },
-    });
-    const waitingTasks = await this.taskRepository.count({
-      where: { createdBy: userId, isActive: true, status: 'waiting_for_response' },
-    });
-    const completedTasks = await this.taskRepository.count({
-      where: { createdBy: userId, isActive: true, status: 'completed' },
+    const assignedTasks = await this.taskRepository.count({
+      where: { targetDepartmentId: departmentId, isActive: true, status: 'assigned' },
     });
 
-    return { openTasks, waitingTasks, completedTasks };
+    return { assignedTasks };
   }
 
   private async generateTaskNumber(): Promise<string> {

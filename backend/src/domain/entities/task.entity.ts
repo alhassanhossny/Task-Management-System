@@ -40,7 +40,7 @@ export class Task {
   @Column({ name: 'task_title_id', type: 'int', nullable: true })
   taskTitleId: number | null;
 
-  @Column({ length: 50, default: 'draft' })
+  @Column({ length: 50, default: 'assigned' })
   status: string;
 
   @Column({ name: 'submitted_at', nullable: true, type: 'timestamp' })

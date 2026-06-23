@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     target_department_id INTEGER REFERENCES departments(id),
     created_by UUID REFERENCES users(id),
     task_title_id INTEGER REFERENCES task_titles(id),
-    status VARCHAR(50) DEFAULT 'draft',
+    status VARCHAR(50) DEFAULT 'assigned',
     submitted_at TIMESTAMP,
     due_date TIMESTAMP,
     is_active BOOLEAN DEFAULT true,

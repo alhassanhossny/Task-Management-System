@@ -35,21 +35,20 @@
     "sourceDepartment": "القسم المصدر",
     "targetDepartment": "القسم المستهدف",
     "createdBy": "تم الإنشاء بواسطة",
-    "assignedTo": "مسندة إلى",
-    "dueDate": "تاريخ الاستحقاق",
+    "submittedAt": "تاريخ الإسناد",
     "comments": "التعليقات",
     "attachments": "المرفقات",
     "noTasks": "لا توجد مهام",
     "statuses": {
-      "draft": "مسودة",
-      "new": "جديد",
       "assigned": "مسند",
-      "in_progress": "قيد التنفيذ",
-      "waiting_for_response": "بانتظار الرد",
       "completed": "مكتمل",
-      "closed": "مغلق",
       "cancelled": "ملغي"
-    }
+    },
+    "setCompleted": "إكمال",
+    "setCancelled": "إلغاء",
+    "targetDepartment": "القسم المستهدف",
+    "sourceDepartment": "القسم المصدر",
+    "followUp": "سجل المتابعة"
   },
   "comment": {
     "add": "إضافة تعليق",
@@ -104,10 +103,10 @@
   "dashboard": {
     "welcome": "مرحباً بك في نظام TASK",
     "totalTasks": "إجمالي المهام",
-    "openTasks": "المهام المفتوحة",
     "assignedTasks": "المهام المسندة",
-    "waitingTasks": "المهام المنتظرة",
     "completedTasks": "المهام المكتملة",
+    "cancelledTasks": "ملغية",
+    "tasksByDepartment": "المهام حسب القسم",
     "myTasks": "مهامي"
   },
   "notification": {
