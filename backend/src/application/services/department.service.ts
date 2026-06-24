@@ -51,10 +51,16 @@ export class DepartmentService {
     return this.departmentRepository.save(department);
   }
 
-  async deactivate(id: number): Promise<void> {
+  async remove(id: number): Promise<void> {
     const department = await this.findOne(id);
-    department.isActive = false;
-    await this.departmentRepository.save(department);
+    try {
+      await this.departmentRepository.remove(department);
+    } catch (error: any) {
+      if (error?.code === '23503') {
+        throw new ConflictException('Cannot delete department that is in use by users or tasks');
+      }
+      throw error;
+    }
   }
 
   async seedDefaultDepartments(): Promise<void> {

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TaskTitle } from '../../domain/entities/task-title.entity';
@@ -41,9 +41,15 @@ export class TaskTitleService {
     return this.taskTitleRepository.save(title);
   }
 
-  async deactivate(id: number): Promise<void> {
+  async remove(id: number): Promise<void> {
     const title = await this.findOne(id);
-    title.isActive = false;
-    await this.taskTitleRepository.save(title);
+    try {
+      await this.taskTitleRepository.remove(title);
+    } catch (error: any) {
+      if (error?.code === '23503') {
+        throw new ConflictException('Cannot delete task title that is in use by existing tasks');
+      }
+      throw error;
+    }
   }
 }

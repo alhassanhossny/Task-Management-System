@@ -144,9 +144,9 @@ export default function TaskTitlesPage() {
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? t('taskTitle.edit') : t('taskTitle.create')}</DialogTitle>
         <DialogContent>
-          <TextField fullWidth label={t('taskTitle.titleAr')} value={form.titleAr} onChange={(e) => setForm({ ...form, titleAr: e.target.value })} margin="normal" required />
-          <TextField fullWidth label={t('taskTitle.titleEn')} value={form.titleEn} onChange={(e) => setForm({ ...form, titleEn: e.target.value })} margin="normal" required />
-          <TextField fullWidth label={t('taskTitle.sortOrder')} type="number" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })} margin="normal" />
+          <TextField fullWidth name="titleAr" label={t('taskTitle.titleAr')} value={form.titleAr} onChange={(e) => setForm({ ...form, titleAr: e.target.value })} margin="normal" required />
+          <TextField fullWidth name="titleEn" label={t('taskTitle.titleEn')} value={form.titleEn} onChange={(e) => setForm({ ...form, titleEn: e.target.value })} margin="normal" required />
+          <TextField fullWidth name="sortOrder" label={t('taskTitle.sortOrder')} type="number" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })} margin="normal" />
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
             <Typography variant="body2">{t('taskTitle.isActive')}</Typography>
             <Switch checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} />

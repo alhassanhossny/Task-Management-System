@@ -19,6 +19,8 @@
     "createTask": "إنشاء مهمة",
     "myTasks": "مهامي",
     "allTasks": "جميع المهام",
+    "assignedTasks": "المهام المسندة",
+    "requestedTasks": "المهام المطلوبة",
     "taskTitles": "عناوين المهام"
   },
   "task": {
@@ -46,9 +48,14 @@
     },
     "setCompleted": "إكمال",
     "setCancelled": "إلغاء",
+    "createdAt": "تاريخ الإنشاء",
+    "assignedTo": "مسند إلى",
+    "finishedAt": "تاريخ الإنهاء",
     "targetDepartment": "القسم المستهدف",
     "sourceDepartment": "القسم المصدر",
-    "followUp": "سجل المتابعة"
+    "followUp": "سجل المتابعة",
+    "dateFrom": "من تاريخ",
+    "dateTo": "إلى تاريخ"
   },
   "comment": {
     "add": "إضافة تعليق",
@@ -98,7 +105,13 @@
     "back": "رجوع",
     "actions": "إجراءات",
     "arabic": "العربية",
-    "english": "English"
+    "english": "English",
+    "details": "تفاصيل المهمة",
+    "download": "تحميل",
+    "all": "الكل",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "view": "عرض"
   },
   "dashboard": {
     "welcome": "مرحباً بك في نظام TASK",
@@ -107,7 +120,9 @@
     "completedTasks": "المهام المكتملة",
     "cancelledTasks": "ملغية",
     "tasksByDepartment": "المهام حسب القسم",
-    "myTasks": "مهامي"
+    "myTasks": "مهامي",
+    "analytics": "التحليلات",
+    "tasksByStatus": "المهام حسب الحالة"
   },
   "notification": {
     "title": "الإشعارات",

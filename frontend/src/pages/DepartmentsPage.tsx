@@ -18,6 +18,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -131,9 +133,14 @@ export default function DepartmentsPage() {
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? t('department.edit') : t('department.create')}</DialogTitle>
         <DialogContent>
-          <TextField fullWidth label={t('department.nameAr')} value={form.nameAr} onChange={(e) => setForm({ ...form, nameAr: e.target.value })} margin="normal" required />
-          <TextField fullWidth label={t('department.nameEn')} value={form.nameEn} onChange={(e) => setForm({ ...form, nameEn: e.target.value })} margin="normal" required />
-          <TextField fullWidth label={t('department.code')} value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} margin="normal" required />
+          <TextField fullWidth name="nameAr" label={t('department.nameAr')} value={form.nameAr} onChange={(e) => setForm({ ...form, nameAr: e.target.value })} margin="normal" required />
+          <TextField fullWidth name="nameEn" label={t('department.nameEn')} value={form.nameEn} onChange={(e) => setForm({ ...form, nameEn: e.target.value })} margin="normal" required />
+          <TextField fullWidth name="code" label={t('department.code')} value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} margin="normal" required />
+          <FormControlLabel
+            control={<Switch checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} />}
+            label={t('taskTitle.isActive')}
+            sx={{ mt: 1 }}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>{t('common.cancel')}</Button>

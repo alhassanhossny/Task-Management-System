@@ -188,6 +188,7 @@ export default function TaskFormPage() {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
+                  name="sourceDepartmentId"
                   label={t('task.sourceDepartment')}
                   value={user?.departmentId
                     ? (lang === 'ar' ? user.departmentNameAr : user.departmentNameEn)

@@ -19,6 +19,8 @@
     "createTask": "Create Task",
     "myTasks": "My Tasks",
     "allTasks": "All Tasks",
+    "assignedTasks": "Assigned Tasks",
+    "requestedTasks": "Requested Tasks",
     "taskTitles": "Task Titles"
   },
   "task": {
@@ -46,9 +48,14 @@
     },
     "setCompleted": "Complete",
     "setCancelled": "Cancel",
+    "createdAt": "Created At",
+    "assignedTo": "Assigned To",
+    "finishedAt": "Finished At",
     "targetDepartment": "Target Department",
-    "sourceDepartment": "Source Department",
-    "followUp": "Follow-up History"
+    "sourceDepartment": "Target Department",
+    "followUp": "Follow-up History",
+    "dateFrom": "From Date",
+    "dateTo": "To Date"
   },
   "comment": {
     "add": "Add Comment",
@@ -98,7 +105,13 @@
     "back": "Back",
     "actions": "Actions",
     "arabic": "العربية",
-    "english": "English"
+    "english": "English",
+    "details": "Task Details",
+    "download": "Download",
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "view": "View"
   },
   "dashboard": {
     "welcome": "Welcome to TASK System",
@@ -107,7 +120,9 @@
     "completedTasks": "Completed Tasks",
     "cancelledTasks": "Cancelled",
     "tasksByDepartment": "Tasks by Department",
-    "myTasks": "My Tasks"
+    "myTasks": "My Tasks",
+    "analytics": "Analytics",
+    "tasksByStatus": "Tasks by Status"
   },
   "notification": {
     "title": "Notifications",

@@ -46,7 +46,7 @@ services:
       SERVER_PORT: 3000
       UPLOAD_DIR: /app/uploads
       BACKUP_DIR: /app/backups
-      CORS_ORIGIN: http://172.16.1.10:8080
+      CORS_ORIGIN: http://172.16.1.10:8080,https://task.darh.com
       DEFAULT_LANG: ar
     ports:
       - "3001:3000"

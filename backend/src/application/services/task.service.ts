@@ -62,10 +62,16 @@ export class TaskService {
     }
 
     if (filters.departmentId) {
-      queryBuilder.andWhere(
-        '(task.sourceDepartmentId = :deptId OR task.targetDepartmentId = :deptId)',
-        { deptId: filters.departmentId },
-      );
+      if (filters.direction === 'assigned') {
+        queryBuilder.andWhere('task.targetDepartmentId = :deptId', { deptId: filters.departmentId });
+      } else if (filters.direction === 'requested') {
+        queryBuilder.andWhere('task.sourceDepartmentId = :deptId', { deptId: filters.departmentId });
+      } else {
+        queryBuilder.andWhere(
+          '(task.sourceDepartmentId = :deptId OR task.targetDepartmentId = :deptId)',
+          { deptId: filters.departmentId },
+        );
+      }
     }
 
     if (filters.createdBy) {
@@ -200,6 +206,11 @@ export class TaskService {
     }
 
     task.status = newStatus;
+    if (newStatus === 'completed' || newStatus === 'cancelled') {
+      task.finishedAt = new Date();
+    } else {
+      task.finishedAt = null;
+    }
     return this.taskRepository.save(task);
   }
 
@@ -219,11 +230,13 @@ export class TaskService {
       const deptStats = await this.taskRepository
         .createQueryBuilder('task')
         .leftJoin('task.targetDepartment', 'department')
-        .select('department.nameAr', 'departmentNameAr')
-        .select('department.nameEn', 'departmentNameEn')
+        .select('department.id', 'departmentId')
+        .addSelect('department.nameAr', 'departmentNameAr')
+        .addSelect('department.nameEn', 'departmentNameEn')
         .addSelect('COUNT(task.id)', 'count')
         .where('task.isActive = :active', { active: true })
-        .groupBy('task.targetDepartmentId')
+        .groupBy('department.id')
+        .addGroupBy('task.targetDepartmentId')
         .addGroupBy('department.nameAr')
         .addGroupBy('department.nameEn')
         .getRawMany();
@@ -231,11 +244,32 @@ export class TaskService {
       return { total, assignedTasks, completedTasks, cancelledTasks, deptStats };
     }
 
+    const total = await this.taskRepository.count({
+      where: [
+        { sourceDepartmentId: departmentId, isActive: true },
+        { targetDepartmentId: departmentId, isActive: true },
+      ],
+    });
     const assignedTasks = await this.taskRepository.count({
-      where: { targetDepartmentId: departmentId, isActive: true, status: 'assigned' },
+      where: [
+        { sourceDepartmentId: departmentId, isActive: true, status: 'assigned' },
+        { targetDepartmentId: departmentId, isActive: true, status: 'assigned' },
+      ],
+    });
+    const completedTasks = await this.taskRepository.count({
+      where: [
+        { sourceDepartmentId: departmentId, isActive: true, status: 'completed' },
+        { targetDepartmentId: departmentId, isActive: true, status: 'completed' },
+      ],
+    });
+    const cancelledTasks = await this.taskRepository.count({
+      where: [
+        { sourceDepartmentId: departmentId, isActive: true, status: 'cancelled' },
+        { targetDepartmentId: departmentId, isActive: true, status: 'cancelled' },
+      ],
     });
 
-    return { assignedTasks };
+    return { total, assignedTasks, completedTasks, cancelledTasks };
   }
 
   private async generateTaskNumber(): Promise<string> {

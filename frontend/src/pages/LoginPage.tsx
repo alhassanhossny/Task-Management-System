@@ -49,6 +49,7 @@ export default function LoginPage() {
         <Box component="form" onSubmit={handleSubmit}>
           <TextField
             fullWidth
+            name="username"
             label={t('auth.username')}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -58,6 +59,7 @@ export default function LoginPage() {
           />
           <TextField
             fullWidth
+            name="password"
             label={t('auth.password')}
             type="password"
             value={password}

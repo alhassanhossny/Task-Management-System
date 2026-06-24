@@ -71,6 +71,7 @@ function SettingRow({ setting, onSave }: { setting: any; onSave: (key: string, v
         <TextField
           fullWidth
           size="small"
+          name="settingValue"
           value={value}
           onChange={(e) => { setValue(e.target.value); setDirty(true); }}
         />

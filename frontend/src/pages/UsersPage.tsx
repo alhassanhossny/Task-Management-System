@@ -19,6 +19,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -168,23 +170,28 @@ export default function UsersPage() {
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? t('userManagement.edit') : t('userManagement.create')}</DialogTitle>
         <DialogContent>
-          <TextField fullWidth label={t('user.fullNameAr')} value={form.fullNameAr} onChange={(e) => setForm({ ...form, fullNameAr: e.target.value })} margin="normal" required />
-          <TextField fullWidth label={t('user.fullNameEn')} value={form.fullNameEn} onChange={(e) => setForm({ ...form, fullNameEn: e.target.value })} margin="normal" required />
-          <TextField fullWidth label={t('user.username')} value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} margin="normal" required />
-          <TextField fullWidth label={t('user.email')} type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} margin="normal" required />
-          <TextField fullWidth label={t('user.password')} type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} margin="normal" required={!editing} />
-          <TextField fullWidth select label={t('user.role')} value={form.roleId} onChange={(e) => setForm({ ...form, roleId: e.target.value })} margin="normal" required>
+          <TextField fullWidth name="fullNameAr" label={t('user.fullNameAr')} value={form.fullNameAr} onChange={(e) => setForm({ ...form, fullNameAr: e.target.value })} margin="normal" required />
+          <TextField fullWidth name="fullNameEn" label={t('user.fullNameEn')} value={form.fullNameEn} onChange={(e) => setForm({ ...form, fullNameEn: e.target.value })} margin="normal" required />
+          <TextField fullWidth name="username" label={t('user.username')} value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} margin="normal" required />
+          <TextField fullWidth name="email" type="email" label={t('user.email')} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} margin="normal" required />
+          <TextField fullWidth name="password" type="password" label={t('user.password')} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} margin="normal" required={!editing} />
+          <TextField fullWidth name="roleId" select label={t('user.role')} value={form.roleId} onChange={(e) => setForm({ ...form, roleId: e.target.value })} margin="normal" required>
             <MenuItem value="">--</MenuItem>
             {roles.map((r: any) => (
               <MenuItem key={r.id} value={r.id}>{lang === 'ar' ? r.nameAr : r.nameEn}</MenuItem>
             ))}
           </TextField>
-          <TextField fullWidth select label={t('user.department')} value={form.departmentId} onChange={(e) => setForm({ ...form, departmentId: e.target.value })} margin="normal">
+          <TextField fullWidth name="departmentId" select label={t('user.department')} value={form.departmentId} onChange={(e) => setForm({ ...form, departmentId: e.target.value })} margin="normal">
             <MenuItem value="">--</MenuItem>
             {departments.map((d: any) => (
               <MenuItem key={d.id} value={d.id}>{lang === 'ar' ? d.nameAr : d.nameEn}</MenuItem>
             ))}
           </TextField>
+          <FormControlLabel
+            control={<Switch checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} />}
+            label={t('taskTitle.isActive')}
+            sx={{ mt: 1 }}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>{t('common.cancel')}</Button>

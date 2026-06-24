@@ -49,6 +49,9 @@ export class Task {
   @Column({ name: 'due_date', nullable: true, type: 'timestamp' })
   dueDate: Date | null;
 
+  @Column({ name: 'finished_at', nullable: true, type: 'timestamp' })
+  finishedAt: Date | null;
+
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 

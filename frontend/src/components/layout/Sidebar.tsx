@@ -38,12 +38,14 @@ export default function Sidebar({ drawerWidth, mobileOpen, onDrawerToggle }: Sid
   const menuItems = [
     { text: 'nav.dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { text: 'nav.tasks', icon: <TaskIcon />, path: '/tasks' },
-    { text: 'nav.users', icon: <PeopleIcon />, path: '/users' },
-    { text: 'nav.departments', icon: <BusinessIcon />, path: '/departments' },
+    { text: 'nav.assignedTasks', icon: <TaskIcon />, path: '/tasks/assigned' },
+    { text: 'nav.requestedTasks', icon: <TaskIcon />, path: '/tasks/requested' },
     { text: 'nav.notifications', icon: <NotificationsIcon />, path: '/notifications' },
   ];
 
   const adminItems = [
+    { text: 'nav.users', icon: <PeopleIcon />, path: '/users' },
+    { text: 'nav.departments', icon: <BusinessIcon />, path: '/departments' },
     { text: 'nav.settings', icon: <SettingsIcon />, path: '/settings' },
     { text: 'nav.audit', icon: <SecurityIcon />, path: '/audit' },
     { text: 'nav.taskTitles', icon: <ListAltIcon />, path: '/task-titles' },
@@ -69,7 +71,7 @@ export default function Sidebar({ drawerWidth, mobileOpen, onDrawerToggle }: Sid
         {menuItems.map((item) => (
           <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
             <ListItemButton
-              selected={location.pathname.startsWith(item.path)}
+              selected={location.pathname === item.path}
               onClick={() => {
                 navigate(item.path);
                 onDrawerToggle();
@@ -121,7 +123,7 @@ export default function Sidebar({ drawerWidth, mobileOpen, onDrawerToggle }: Sid
   return (
     <Box
       component="nav"
-      sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+      sx={{ width: { md: drawerWidth }, flexShrink: 0 }}
     >
       <Drawer
         variant="temporary"

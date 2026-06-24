@@ -28,7 +28,7 @@ interface HeaderProps {
 
 export default function Header({ drawerWidth, onDrawerToggle }: HeaderProps) {
   const { t, i18n } = useTranslation();
-  const { user, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const { isRtl } = useDirection();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -62,12 +62,12 @@ export default function Header({ drawerWidth, onDrawerToggle }: HeaderProps) {
     <AppBar
       position="fixed"
       sx={{
-        width: { md: 'calc(100% - 24px)' },
-        ...(isRtl ? { mr: '24px' } : { ml: '24px' }),
+        width: { md: `calc(100% - ${drawerWidth}px)` },
         backgroundColor: '#fff',
         color: '#333',
         boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
       }}
+      style={{ [isRtl ? 'right' : 'left']: `${drawerWidth}px` }}
     >
       <Toolbar>
         <IconButton
@@ -79,9 +79,12 @@ export default function Header({ drawerWidth, onDrawerToggle }: HeaderProps) {
           <MenuIcon />
         </IconButton>
 
-        <Typography variant="h6" noWrap sx={{ flexGrow: 1, fontWeight: 700 }}>
-          {t('app.shortName')}
+        <Typography variant="h6" noWrap sx={{ fontWeight: 600, mr: 2, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+          {i18n.language === 'ar'
+            ? `${user?.departmentNameAr || ''} / ${user?.fullNameAr || ''}`
+            : `${user?.departmentNameEn || ''} / ${user?.fullNameEn || ''}`}
         </Typography>
+        <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Tooltip title={t('nav.notifications')}>
@@ -127,10 +130,12 @@ export default function Header({ drawerWidth, onDrawerToggle }: HeaderProps) {
                 {i18n.language === 'ar' ? user?.fullNameAr : user?.fullNameEn}
               </Typography>
             </MenuItem>
-            <MenuItem onClick={() => { setAnchorEl(null); navigate('/settings'); }}>
-              <ListItemIcon><SettingsIcon fontSize="small" /></ListItemIcon>
-              {t('nav.settings')}
-            </MenuItem>
+            {isAdmin && (
+              <MenuItem onClick={() => { setAnchorEl(null); navigate('/settings'); }}>
+                <ListItemIcon><SettingsIcon fontSize="small" /></ListItemIcon>
+                {t('nav.settings')}
+              </MenuItem>
+            )}
             <MenuItem onClick={handleLogout}>
               <ListItemIcon><LogoutIcon fontSize="small" /></ListItemIcon>
               {t('nav.logout')}

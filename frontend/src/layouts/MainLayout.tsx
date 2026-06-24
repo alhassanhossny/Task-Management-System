@@ -18,7 +18,7 @@ export default function MainLayout() {
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', direction: isRtl ? 'rtl' : 'ltr', height: '100vh', overflow: 'hidden' }}>
       <Header drawerWidth={DRAWER_WIDTH} onDrawerToggle={handleDrawerToggle} />
       <Sidebar
         drawerWidth={DRAWER_WIDTH}
@@ -29,11 +29,11 @@ export default function MainLayout() {
         component="main"
         sx={{
           flexGrow: 1,
+          minWidth: 0,
+          height: '100vh',
+          overflow: 'auto',
           p: 3,
-          width: { md: 'calc(100% - 24px)' },
-          ...(isRtl ? { mr: '24px' } : { ml: '24px' }),
           backgroundColor: '#f5f5f5',
-          minHeight: '100vh',
         }}
       >
         <Toolbar />

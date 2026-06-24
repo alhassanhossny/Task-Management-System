@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -16,61 +16,75 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TablePagination from '@mui/material/TablePagination';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import AddIcon from '@mui/icons-material/Add';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../store/auth.context';
 import api from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const statusColors: Record<string, string> = {
-  assigned: '#2196f3',
+  assigned: '#f5a623',
   completed: '#4caf50',
   cancelled: '#f44336',
 };
 
-export default function TasksPage() {
+interface TasksPageProps {
+  type?: 'all' | 'assigned' | 'requested';
+}
+
+export default function TasksPage({ type = 'all' }: TasksPageProps) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { user, isAdmin } = useAuth();
   const [tasks, setTasks] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [filters, setFilters] = useState({
-    status: '',
+    status: searchParams.get('status') || '',
     keyword: '',
-    taskNumber: '',
+    dateFrom: '',
+    dateTo: '',
   });
-
-  const fetchTasks = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.append('page', String(page + 1));
-      params.append('limit', String(rowsPerPage));
-      if (filters.status) params.append('status', filters.status);
-      if (filters.keyword) params.append('keyword', filters.keyword);
-      if (filters.taskNumber) params.append('taskNumber', filters.taskNumber);
-
-      const res = await api.get(`/tasks?${params.toString()}`);
-      setTasks(res.data.data.data || []);
-      setTotal(res.data.data.total || 0);
-    } catch (err) {
-      console.error('Failed to load tasks', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [departmentFilter, setDepartmentFilter] = useState(searchParams.get('departmentId') || '');
+  const [searchKey, setSearchKey] = useState(0);
 
   useEffect(() => {
+    const fetchTasks = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        params.append('page', String(page + 1));
+        params.append('limit', String(rowsPerPage));
+        if (filters.status) params.append('status', filters.status);
+        if (filters.keyword) params.append('keyword', filters.keyword);
+        if (filters.dateFrom) params.append('startDate', filters.dateFrom);
+        if (filters.dateTo) params.append('endDate', filters.dateTo);
+        if (departmentFilter) {
+          params.append('departmentId', departmentFilter);
+          if (type !== 'all') params.append('direction', type);
+        } else if (user?.departmentId) {
+          params.append('departmentId', String(user.departmentId));
+          if (type !== 'all') params.append('direction', type);
+        }
+
+        const res = await api.get(`/tasks?${params.toString()}`);
+        setTasks(res.data.data.data || []);
+        setTotal(res.data.data.total || 0);
+      } catch (err) {
+        console.error('Failed to load tasks', err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchTasks();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, type, filters.status, departmentFilter, searchKey, user?.departmentId]);
 
   const handleSearch = () => {
     setPage(0);
-    fetchTasks();
+    setSearchKey(k => k + 1);
   };
 
   return (
@@ -89,16 +103,18 @@ export default function TasksPage() {
               <TextField
                 fullWidth
                 size="small"
-                label={t('task.number')}
-                value={filters.taskNumber}
-                onChange={(e) => setFilters({ ...filters, taskNumber: e.target.value })}
+                name="keyword"
+                label={t('common.search')}
+                value={filters.keyword}
+                onChange={(e) => setFilters({ ...filters, keyword: e.target.value })}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={2}>
               <TextField
                 fullWidth
                 size="small"
                 select
+                name="status"
                 label={t('task.status')}
                 value={filters.status}
                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
@@ -109,16 +125,31 @@ export default function TasksPage() {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={2}>
               <TextField
                 fullWidth
                 size="small"
-                label={t('common.search')}
-                value={filters.keyword}
-                onChange={(e) => setFilters({ ...filters, keyword: e.target.value })}
+                type="date"
+                name="dateFrom"
+                label={t('task.dateFrom')}
+                value={filters.dateFrom}
+                onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
+                InputLabelProps={{ shrink: true }}
               />
             </Grid>
             <Grid item xs={12} sm={2}>
+              <TextField
+                fullWidth
+                size="small"
+                type="date"
+                name="dateTo"
+                label={t('task.dateTo')}
+                value={filters.dateTo}
+                onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
               <Button fullWidth variant="outlined" onClick={handleSearch}>
                 {t('common.search')}
               </Button>
@@ -137,21 +168,28 @@ export default function TasksPage() {
                 <TableRow>
                   <TableCell>{t('task.number')}</TableCell>
                   <TableCell>{t('task.title') || 'Title'}</TableCell>
+                  <TableCell>{t('task.assignedTo')}</TableCell>
+                  <TableCell>{t('task.createdAt')}</TableCell>
                   <TableCell>{t('task.status')}</TableCell>
+                  <TableCell>{t('task.finishedAt')}</TableCell>
                   <TableCell>{t('task.createdBy')}</TableCell>
-                  <TableCell>{t('common.actions')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {tasks.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} align="center">
+                    <TableCell colSpan={7} align="center">
                       <Typography color="text.secondary">{t('task.noTasks')}</Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
                   tasks.map((task: any) => (
-                    <TableRow key={task.id} hover>
+                    <TableRow
+                      key={task.id}
+                      hover
+                      sx={{ cursor: 'pointer', '&:hover': { backgroundColor: 'action.hover' } }}
+                      onClick={() => navigate(`/tasks/${task.id}`)}
+                    >
                       <TableCell>
                         <Typography variant="body2" fontWeight={600}>
                           {task.taskNumber}
@@ -159,6 +197,12 @@ export default function TasksPage() {
                       </TableCell>
                       <TableCell>
                         {i18n.language === 'ar' ? task.titleAr : task.titleEn}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: '0.875rem' }}>
+                        {i18n.language === 'ar' ? task.targetDepartment?.nameAr || task.targetDepartmentNameAr : task.targetDepartment?.nameEn || task.targetDepartmentNameEn}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                        {task.submittedAt ? new Date(task.submittedAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-SA' : 'en-GB') + '\n' + new Date(task.submittedAt).toLocaleTimeString(i18n.language === 'ar' ? 'ar-SA' : 'en-GB', { hour: '2-digit', minute: '2-digit' }) : '-'}
                       </TableCell>
                       <TableCell>
                         <Chip
@@ -171,15 +215,11 @@ export default function TasksPage() {
                           }}
                         />
                       </TableCell>
-                      <TableCell>
-                        {i18n.language === 'ar' ? task.createdByUser?.fullNameAr : task.createdByUser?.fullNameEn}
+                      <TableCell sx={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                        {task.finishedAt ? new Date(task.finishedAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-SA' : 'en-GB') + '\n' + new Date(task.finishedAt).toLocaleTimeString(i18n.language === 'ar' ? 'ar-SA' : 'en-GB', { hour: '2-digit', minute: '2-digit' }) : '-'}
                       </TableCell>
                       <TableCell>
-                        <Tooltip title={t('task.view')}>
-                          <IconButton size="small" onClick={() => navigate(`/tasks/${task.id}`)}>
-                            <VisibilityIcon />
-                          </IconButton>
-                        </Tooltip>
+                        {i18n.language === 'ar' ? task.createdByUser?.fullNameAr : task.createdByUser?.fullNameEn}
                       </TableCell>
                     </TableRow>
                   ))

@@ -39,8 +39,8 @@ export class TaskTitlesController {
 
   @Delete(':id')
   @RequirePermissions('task-titles.delete')
-  async deactivate(@Param('id') id: number) {
-    await this.taskTitleService.deactivate(id);
-    return { message: 'Task title deactivated successfully' };
+  async remove(@Param('id') id: number) {
+    await this.taskTitleService.remove(id);
+    return { message: 'Task title deleted successfully' };
   }
 }

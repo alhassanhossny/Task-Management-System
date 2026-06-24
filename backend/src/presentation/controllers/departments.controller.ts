@@ -17,6 +17,7 @@ export class DepartmentsController {
   }
 
   @Get()
+  @RequirePermissions('departments.view')
   async findAll() {
     return this.departmentService.findAll();
   }
@@ -39,8 +40,8 @@ export class DepartmentsController {
 
   @Delete(':id')
   @RequirePermissions('departments.delete')
-  async deactivate(@Param('id') id: number) {
-    await this.departmentService.deactivate(id);
-    return { message: 'Department deactivated successfully' };
+  async remove(@Param('id') id: number) {
+    await this.departmentService.remove(id);
+    return { message: 'Department deleted successfully' };
   }
 }

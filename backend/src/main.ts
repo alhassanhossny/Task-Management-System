@@ -10,8 +10,10 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
 
+  const corsOrigins = (process.env.CORS_ORIGIN || 'http://172.16.1.10:5173')
+    .split(',').map(s => s.trim());
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://172.16.1.10:5173',
+    origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],

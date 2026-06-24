@@ -1,6 +1,8 @@
 import { IsString, IsOptional, IsNumber, IsDateString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateTaskDto {
+  @Type(() => Number)
   @IsNumber()
   taskTitleId: number;
 
@@ -13,16 +15,19 @@ export class CreateTaskDto {
   descriptionEn?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   sourceDepartmentId?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   targetDepartmentId?: number;
 }
 
 export class UpdateTaskDto {
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   taskTitleId?: number;
 
@@ -35,10 +40,12 @@ export class UpdateTaskDto {
   descriptionEn?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   sourceDepartmentId?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   targetDepartmentId?: number;
 
@@ -62,6 +69,7 @@ export class TaskFilterDto {
   status?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   departmentId?: number;
 
@@ -79,13 +87,19 @@ export class TaskFilterDto {
 
   @IsOptional()
   @IsString()
+  direction?: string;
+
+  @IsOptional()
+  @IsString()
   keyword?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   page?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   limit?: number;
 }
@@ -111,6 +125,7 @@ export class TaskResponseDto {
   taskTitleEn: string;
   status: string;
   submittedAt: string;
+  finishedAt: string | null;
   createdAt: string;
   updatedAt: string;
   commentCount: number;

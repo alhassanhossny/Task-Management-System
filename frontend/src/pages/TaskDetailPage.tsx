@@ -31,7 +31,7 @@ import api from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const statusColors: Record<string, string> = {
-  assigned: '#2196f3',
+  assigned: '#f5a623',
   completed: '#4caf50',
   cancelled: '#f44336',
 };
@@ -109,6 +109,24 @@ export default function TaskDetailPage() {
     }
   };
 
+  const handleDownload = async (attachmentId: string, fileName: string) => {
+    try {
+      const res = await api.get(`/tasks/${id}/attachments/${attachmentId}/download`, {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch {
+      toast.error('Error downloading file');
+    }
+  };
+
   if (loading) return <LoadingSpinner />;
   if (!task) return <Typography>{t('common.noData')}</Typography>;
 
@@ -173,6 +191,7 @@ export default function TaskDetailPage() {
                   size="small"
                   multiline
                   maxRows={4}
+                  name="comment"
                   placeholder={t('comment.placeholder')}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
@@ -282,14 +301,20 @@ export default function TaskDetailPage() {
                 <Box>
                   <Typography variant="caption" color="text.secondary">{t('task.createdAt')}</Typography>
                   <Typography variant="body2">
-                    {task.createdAt ? new Date(task.createdAt).toLocaleString() : '--'}
+                    {task.createdAt ? new Date(task.createdAt).toLocaleDateString() : '--'}
+                  </Typography>
+                  <Typography variant="caption" color="text.disabled">
+                    {task.createdAt ? new Date(task.createdAt).toLocaleTimeString() : ''}
                   </Typography>
                 </Box>
                 {task.submittedAt && (
                   <Box>
                     <Typography variant="caption" color="text.secondary">{t('task.submittedAt')}</Typography>
                     <Typography variant="body2">
-                      {new Date(task.submittedAt).toLocaleString()}
+                      {new Date(task.submittedAt).toLocaleDateString()}
+                    </Typography>
+                    <Typography variant="caption" color="text.disabled">
+                      {new Date(task.submittedAt).toLocaleTimeString()}
                     </Typography>
                   </Box>
                 )}
@@ -317,7 +342,7 @@ export default function TaskDetailPage() {
                     <ListItem key={att.id} secondaryAction={
                       <Box>
                         <Tooltip title={t('common.download')}>
-                          <IconButton edge="end" size="small" href={`/api/v1/tasks/${id}/attachments/${att.id}/download`}>
+                          <IconButton edge="end" size="small" onClick={() => handleDownload(att.id, att.originalName)}>
                             <DownloadIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>

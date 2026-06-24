@@ -34,6 +34,15 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { isAdmin, loading } = useAuth();
+
+  if (loading) return <LoadingSpinner />;
+  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+
+  return <>{children}</>;
+}
+
 function AppContent() {
   const { i18n } = useTranslation();
   const lang = i18n.language;
@@ -62,11 +71,13 @@ function AppContent() {
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="tasks" element={<TasksPage />} />
+              <Route path="tasks/assigned" element={<TasksPage type="assigned" />} />
+              <Route path="tasks/requested" element={<TasksPage type="requested" />} />
               <Route path="tasks/create" element={<TaskFormPage />} />
               <Route path="tasks/:id" element={<TaskDetailPage />} />
               <Route path="tasks/:id/edit" element={<TaskFormPage />} />
-              <Route path="users" element={<UsersPage />} />
-              <Route path="departments" element={<DepartmentsPage />} />
+              <Route path="users" element={<AdminRoute><UsersPage /></AdminRoute>} />
+              <Route path="departments" element={<AdminRoute><DepartmentsPage /></AdminRoute>} />
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="audit" element={<AuditPage />} />
